@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VEGA SACS / CITY GOVERNANCE OS - Pole Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#4cd7f6",
+                    "on-secondary-container": "#5b3800",
+                    "on-background": "#dae2fd",
+                    "outline-variant": "#3d494c",
+                    "surface": "#0b1326",
+                    "on-tertiary-fixed": "#002113",
+                    "error-container": "#93000a",
+                    "surface-bright": "#31394d",
+                    "secondary-fixed-dim": "#ffb95f",
+                    "inverse-surface": "#dae2fd",
+                    "inverse-on-surface": "#283044",
+                    "on-surface-variant": "#bcc9cd",
+                    "on-secondary": "#472a00",
+                    "surface-container-lowest": "#060e20",
+                    "primary-fixed": "#acedff",
+                    "background": "#0b1326",
+                    "primary-fixed-dim": "#4cd7f6",
+                    "on-tertiary-container": "#00452e",
+                    "surface-dim": "#0b1326",
+                    "surface-container-low": "#131b2e",
+                    "inverse-primary": "#00687a",
+                    "on-primary-fixed-variant": "#004e5c",
+                    "tertiary": "#4edea3",
+                    "secondary": "#ffb95f",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "primary-container": "#06b6d4",
+                    "on-error": "#690005",
+                    "tertiary-container": "#1bbd85",
+                    "secondary-fixed": "#ffddb8",
+                    "on-tertiary": "#003824",
+                    "secondary-container": "#ee9800",
+                    "on-primary-fixed": "#001f26",
+                    "outline": "#869397",
+                    "on-surface": "#dae2fd",
+                    "tertiary-fixed": "#6ffbbe",
+                    "surface-container-highest": "#2d3449",
+                    "on-primary-container": "#00424f",
+                    "surface-container-high": "#222a3d",
+                    "on-secondary-fixed": "#2a1700",
+                    "on-secondary-fixed-variant": "#653e00",
+                    "on-error-container": "#ffdad6",
+                    "surface-container": "#171f33",
+                    "on-primary": "#003640",
+                    "primary": "#4cd7f6",
+                    "error": "#ffb4ab",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "surface-variant": "#2d3449"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-page": "24px",
+                    "unit": "4px",
+                    "stack-md": "16px",
+                    "card-padding": "16px",
+                    "top-nav-height": "64px",
+                    "stack-sm": "8px",
+                    "sidebar-width": "240px",
+                    "stack-lg": "24px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "headline-xl": ["Inter", "sans-serif"],
+                    "label-md": ["JetBrains Mono", "monospace"],
+                    "body-lg": ["Inter", "sans-serif"],
+                    "headline-lg-mobile": ["Inter", "sans-serif"],
+                    "headline-lg": ["Inter", "sans-serif"],
+                    "label-sm": ["JetBrains Mono", "monospace"],
+                    "headline-md": ["Inter", "sans-serif"],
+                    "body-md": ["Inter", "sans-serif"],
+                    "display-lg": ["Inter", "sans-serif"]
+            },
+            "fontSize": {
+                    "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-sm": ["10px", {"lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .glass-panel {
+            background-color: theme('colors.surface-container-highest');
+            border: 1px solid theme('colors.outline-variant');
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .neon-border-focus:focus-within { border-color: theme('colors.primary-container'); box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2); }
+        /* Custom scrollbar for deep-sea theme */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: theme('colors.surface'); }
+        ::-webkit-scrollbar-thumb { background: theme('colors.surface-container-high'); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: theme('colors.surface-bright'); }
+
+        /* --- LED Matrix live control widgets --- */
+        .flash-value { transition: color .25s ease, text-shadow .25s ease; }
+        .flash-value.flash { color: theme('colors.primary'); text-shadow: 0 0 14px rgba(76,215,246,0.55); }
+
+        .mode-btn {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+            padding: 14px 4px 11px; border-radius: 0.5rem; border: 1px solid theme('colors.outline-variant');
+            background: theme('colors.surface'); color: theme('colors.on-surface-variant');
+            font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500; cursor: pointer;
+            transition: all .15s ease;
+        }
+        .mode-btn .material-symbols-outlined { font-size: 20px; }
+        .mode-btn.active {
+            color: theme('colors.on-primary-container'); background: theme('colors.primary-container');
+            border-color: theme('colors.primary-container'); font-weight: 600;
+            box-shadow: 0 0 16px -4px theme('colors.primary');
+        }
+        @media (hover:hover) and (pointer:fine) {
+            .mode-btn:not(.active):hover { border-color: theme('colors.primary'); color: theme('colors.on-surface'); }
+        }
+
+        .chip-btn {
+            padding: 8px 4px; border-radius: 0.5rem; border: 1px solid theme('colors.outline-variant');
+            background: theme('colors.surface'); color: theme('colors.on-surface-variant');
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+            text-align: center; cursor: pointer;
+        }
+        .chip-btn.active { color: theme('colors.on-secondary-container'); background: theme('colors.secondary-container'); border-color: theme('colors.secondary-container'); }
+
+        .swatch-dot {
+            aspect-ratio: 1; border-radius: 9999px; border: 2px solid theme('colors.outline-variant');
+            cursor: pointer; padding: 0; width: 100%;
+        }
+        .swatch-dot.active { border-color: theme('colors.on-surface'); box-shadow: 0 0 0 2px theme('colors.surface-container-highest'), 0 0 0 4px theme('colors.on-surface'); }
+
+        input[type=color].swatch-custom { width: 40px; height: 40px; border: none; border-radius: 9999px; background: none; padding: 0; cursor: pointer; }
+        input[type=color].swatch-custom::-webkit-color-swatch-wrapper { padding: 0; border-radius: 9999px; }
+        input[type=color].swatch-custom::-webkit-color-swatch { border: 2px solid theme('colors.outline-variant'); border-radius: 9999px; }
+
+        input[type=range].vega-range { -webkit-appearance: none; width: 100%; height: 24px; background: transparent; }
+        input[type=range].vega-range::-webkit-slider-runnable-track { height: 4px; background: theme('colors.surface-bright'); border-radius: 3px; }
+        input[type=range].vega-range::-webkit-slider-thumb {
+            -webkit-appearance: none; margin-top: -8px; width: 18px; height: 18px; border-radius: 50%;
+            background: theme('colors.primary'); border: 3px solid theme('colors.surface-container-highest');
+            box-shadow: 0 0 10px -1px theme('colors.primary');
+        }
+        input[type=range].vega-range::-moz-range-track { height: 4px; background: theme('colors.surface-bright'); border-radius: 3px; }
+        input[type=range].vega-range::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: theme('colors.primary'); border: 3px solid theme('colors.surface-container-highest'); }
+
+        #ledHistoryChart { width: 100%; height: 200px; display: block; border-radius: 0.5rem; background: theme('colors.surface'); }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<header class="bg-surface-container-high dark:bg-surface-container-high docked full-width top-0 border-b border-outline-variant dark:border-outline-variant flat no shadows fixed left-0 w-full z-50 flex items-center justify-between px-margin-page">
+<div class="flex items-center gap-stack-md">
+<img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBze4A2CRxYkVIEM0V-QeCapzvm671jv48CDD7kWlXbsoAOhVkTno-c4fayfyeel4gnhrzzQWBA9qnDW7ezh6_9wnZOgdzwLahb0nBYkJG72E0Cq4h3VAFAB9agrSXvYImUvpNnSxGBwLSGNGhXOVfWQCYiUB-KBvCI1jy75vOxihF1RsyBz47o75HXGmchYH4-JIVEukdscTmL-CGKpHvi2GrMDoZ6KhkdpARsWXKnr9HZiIbzWXNey_islXJbiuxW3TQ"/>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight truncate hidden lg:block">VEGA SACS OS</span>
+</div>
+<nav class="hidden md:flex items-center gap-stack-lg h-full">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="fleet-overview.html">Fleet Overview</a>
+<a class="text-secondary dark:text-secondary border-b-2 border-secondary pb-1 font-bold font-label-md text-label-md hover:text-secondary dark:hover:text-secondary transition-colors duration-200 h-full flex items-center mt-1" href="pole-management.html">Pole Management</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="energy-analytics.html">Energy Analytics</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="fault-reporting.html">Fault Reporting</a>
+</nav>
+<div class="flex items-center gap-stack-md">
+<div class="hidden lg:flex items-center bg-surface px-3 py-1.5 rounded border border-outline-variant neon-border-focus transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md text-on-surface py-0 px-2 w-48 placeholder-on-surface-variant" placeholder="Search node ID..." type="text"/>
+</div>
+<div class="hidden xl:flex items-center gap-unit bg-secondary-container/10 border border-secondary-container rounded-full px-3 py-1">
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+<span class="font-label-md text-label-md text-secondary-container">ACTION REQUIRED: 5 NODES</span>
+</div>
+<button class="bg-error text-on-error font-label-md text-label-md px-4 py-2 rounded hover:bg-error-container hover:text-on-error-container transition-colors duration-200 border border-transparent hover:border-error flex items-center gap-unit">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<span class="hidden sm:inline">Emergency Override</span>
+</button>
+<div class="flex items-center gap-unit border-l border-outline-variant pl-stack-md ml-stack-sm">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="ml-2 w-8 h-8 rounded bg-surface-variant overflow-hidden border border-outline-variant">
+<img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUAmrtckNdGlZbcsxuKV-QSqvNgOs5dSuNujTtfi8sp8GXJ50BqQdyyOoFzHAa3BAKjluyiDBaiDPhGk5u0ngyHFD5KQYcIV73eq5jyPIPjHx2uHQU4y5Rj_OO4VvCC5baCCTPwjatztv4GPmZ7vU-BGUIc6UXCdbG4HJKFGSwxQMNiufM__faz6UyoY4_H2WH60cbYMvgtWLywG6BVybl6bI2bLaHUR5ECT9PbwqQWvAh8Vm5FgH7WphR7rcrUg-MrUI"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar & Main Content Wrapper -->
+<div class="flex pt-40 h-screen">
+<!-- SideNavBar -->
+<aside class="bg-surface-container dark:bg-surface-container fixed left-0 top-40 h-[calc(100vh-160px)] w-sidebar-width border-r border-outline-variant dark:border-outline-variant flat no shadows flex flex-col justify-between py-stack-lg z-40 hidden md:flex">
+<div class="flex flex-col gap-unit">
+<nav class="flex flex-col">
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="automation-rules.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud_download</span>
+                    Automation Rules
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="user-access-management.html">
+<span class="material-symbols-outlined">manage_accounts</span>
+                    User &amp; Access Management
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="integrations.html">
+<span class="material-symbols-outlined">extension</span>
+                    Integrations
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="system-logs.html">
+<span class="material-symbols-outlined">description</span>
+                    System Logs
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="billing-reporting.html">
+<span class="material-symbols-outlined">receipt_long</span>
+                    Billing/Reporting
+                </a>
+</nav>
+</div>
+<div class="flex flex-col px-4 gap-stack-md">
+<button class="w-full bg-primary-container text-on-primary-container font-label-md text-label-md py-2 px-4 rounded border border-transparent hover:border-primary-container hover:bg-transparent hover:text-primary-container transition-all duration-200">
+                + New Pole Node
+            </button>
+<nav class="flex flex-col gap-unit pt-stack-sm border-t border-outline-variant">
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant py-2 border-l-4 border-transparent font-label-md text-label-md hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+                    Help
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant py-2 border-l-4 border-transparent font-label-md text-label-md hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+                    Sign Out
+                </a>
+</nav>
+<div class="flex items-center gap-stack-sm pt-stack-md border-t border-outline-variant mt-2">
+<div class="w-10 h-10 rounded bg-surface-variant overflow-hidden border border-outline-variant shrink-0">
+<img alt="Admin User" class="w-full h-full object-cover" data-alt="A small, stylized profile icon of an admin user." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEAaBe55SHcjhNNKqSFNokGbcvFUVyJq6dHzjKXS2rMs9GF9lrZpwI4VjQ56ElKh_U0mDsuOI1BgJAMsMZlE6Q_iC6DkxfZqu6KPkCwvz-FUm2kw41rhw9yDROOXQhDu6boGFPaZx1IN2-Rx6e9uR2kk7TN71ELds82q9sakE7UmEdizvQXPJAv5AWg9GYstl1KY43VicrT1FuM4Z296y_uXkZT9kin8JWrUobk7_t027TQ9HHdADj6A"/>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="font-label-md text-label-md text-on-surface truncate">Administrator</span>
+<span class="font-body-md text-[12px] text-on-surface-variant truncate">Super User</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-sidebar-width overflow-y-auto bg-background p-margin-page">
+<!-- Page Header -->
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-4">
+<a class="text-on-surface-variant hover:text-primary flex items-center gap-1 transition-colors group" href="fleet-overview.html">
+<span class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
+<span class="font-label-md text-label-md">Back to Fleet</span>
+</a>
+<div class="h-6 w-px bg-outline-variant mx-2"></div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface m-0">POLE-DL-001</h1>
+<span class="text-on-surface-variant font-body-lg">Connaught Place</span>
+<div class="flex items-center gap-2 ml-4">
+<span class="px-2 py-1 rounded bg-surface-bright border border-outline-variant font-label-sm text-label-sm text-on-surface tracking-wider">FULL POLE</span>
+<div class="flex items-center gap-1.5 px-2 py-1 rounded bg-error/10 border border-error/20" id="nodeStatusWrap">
+<div class="w-2 h-2 rounded-full bg-error" id="nodeStatusDot"></div>
+<span class="font-label-sm text-label-sm text-error" id="nodeStatusLabel">CONNECTING</span>
+</div>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 border border-outline-variant rounded text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">sync</span>
+</button>
+<button class="p-2 border border-outline-variant rounded text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- 1. LIVE TELEMETRY (Col 1-8) -->
+<div class="col-span-12 xl:col-span-8 flex flex-col gap-stack-md">
+<h2 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest border-b border-outline-variant pb-2">Live Telemetry</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-unit">
+<!-- Temp -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">device_thermostat</span>
+<span class="font-label-md text-label-md">Temperature</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveTemp">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">°C</span>
+</div>
+</div>
+<!-- Humidity -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">humidity_mid</span>
+<span class="font-label-md text-label-md">Humidity</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveHum">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">%</span>
+</div>
+</div>
+<!-- Soil Moisture -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">water_drop</span>
+<span class="font-label-md text-label-md">Soil Moisture</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveSoil">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">%</span>
+</div>
+</div>
+<!-- AQI -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-tertiary">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">air</span>
+<span class="font-label-md text-label-md">AQI</span>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-tertiary">42</span>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary bg-tertiary/10 px-2 py-0.5 rounded">GOOD</span>
+</div>
+</div>
+<!-- Noise (Amber) -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-secondary bg-secondary/5">
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-sm">volume_up</span>
+<span class="font-label-md text-label-md">Ambient Noise</span>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-secondary">85</span>
+<span class="font-label-md text-label-md text-secondary/70">dB</span>
+</div>
+<span class="material-symbols-outlined text-secondary text-sm">warning</span>
+</div>
+</div>
+<!-- Light Level -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">light_mode</span>
+<span class="font-label-md text-label-md">Light Level</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface">450</span>
+<span class="font-label-md text-label-md text-on-surface-variant">lux</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. ENERGY (Col 9-12) -->
+<div class="col-span-12 xl:col-span-4 flex flex-col gap-stack-md">
+<h2 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest border-b border-outline-variant pb-2">Power Profile</h2>
+<div class="glass-panel p-card-padding rounded-lg flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-label-md text-label-md text-on-surface-variant mb-1">Current Draw</div>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-xl text-headline-xl text-primary">124.5</span>
+<span class="font-label-md text-label-md text-primary/70">W</span>
+</div>
+</div>
+<div class="text-right">
+<div class="font-label-md text-label-md text-on-surface-variant mb-1 flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-sm">solar_power</span> Gen
+                                </div>
+<div class="flex items-baseline gap-1 justify-end">
+<span class="font-headline-md text-headline-md text-tertiary">45.2</span>
+<span class="font-label-md text-label-md text-tertiary/70">W</span>
+</div>
+</div>
+</div>
+<!-- Battery Bar -->
+<div class="mt-2">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant mb-1">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined" style="font-size: 14px;">battery_charging_full</span> Battery Level</span>
+<span>82% (2.4 kWh)</span>
+</div>
+<div class="h-1.5 w-full bg-surface-bright rounded-full overflow-hidden">
+<div class="h-full bg-tertiary" style="width: 82%;"></div>
+</div>
+</div>
+<!-- 24h Power Draw Chart (Placeholder) -->
+<div class="mt-4 pt-4 border-t border-outline-variant h-32 relative flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-2">24h Draw (W)</span>
+<div class="flex-1 w-full bg-gradient-to-t from-primary/5 to-transparent border-b border-primary/30 relative">
+<!-- Abstract chart representation -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0 80 Q 20 70, 40 85 T 80 40 T 100 60 L 100 100 L 0 100 Z" fill="rgba(6, 182, 212, 0.1)"></path>
+<path d="M0 80 Q 20 70, 40 85 T 80 40 T 100 60" fill="none" stroke="theme('colors.primary')" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<!-- 2. COMPONENT POWER CONTROL & 3. LIGHTING (Col 1-8) -->
+<div class="col-span-12 xl:col-span-8 flex flex-col gap-stack-md mt-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Component Control -->
+<div class="flex flex-col gap-stack-md">
+<h2 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest border-b border-outline-variant pb-2">Component Power Control</h2>
+<div class="flex flex-col gap-2">
+<!-- LED Matrix -->
+<div class="glass-panel px-4 py-3 rounded flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface">LED Matrix Display</span>
+<div class="flex bg-surface rounded border border-outline-variant p-0.5" id="ledPowerButtons">
+<button class="px-3 py-1 font-label-sm text-label-sm rounded text-on-surface-variant hover:text-on-surface" data-power="on" onclick="ledPower('on')">ON</button>
+<button class="px-3 py-1 font-label-sm text-label-sm rounded text-on-surface-variant hover:text-on-surface" data-power="auto" onclick="ledPower('auto')" title="Scheduled automation not yet wired to firmware">AUTO</button>
+<button class="px-3 py-1 font-label-sm text-label-sm rounded bg-surface-bright text-on-surface" data-power="off" onclick="ledPower('off')">OFF</button>
+</div>
+</div>
+<!-- Env Sensors -->
+<div class="glass-panel px-4 py-3 rounded flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface">Env. Sensors</span>
+<div class="flex bg-surface rounded border border-outline-variant p-0.5">
+<button class="px-3 py-1 font-label-sm text-label-sm rounded text-on-surface-variant hover:text-on-surface">ON</button>
+<button class="px-3 py-1 font-label-sm text-label-sm rounded bg-primary-container text-on-primary-container">AUTO</button>
+<button class="px-3 py-1 font-label-sm text-label-sm rounded text-on-surface-variant hover:text-on-surface">OFF</button>
+</div>
+</div>
+<!-- Irrigation Pump -->
+<div class="glass-panel px-4 py-3 rounded flex justify-between items-center opacity-70">
+<span class="font-label-md text-label-md text-on-surface-variant">Irrigation Pump</span>
+<div class="flex bg-surface rounded border border-outline-variant p-0.5">
+<button class="px-3 py-1 font-label-sm text-label-sm rounded text-on-surface-variant hover:text-on-surface">ON</button>
+<button class="px-3 py-1 font-label-sm text-label-sm rounded text-on-surface-variant hover:text-on-surface">AUTO</button>
+<button class="px-3 py-1 font-label-sm text-label-sm rounded bg-surface-bright text-on-surface">OFF</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Dual-Mode Lighting -->
+<div class="flex flex-col gap-stack-md">
+<h2 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest border-b border-outline-variant pb-2">Dual-Mode Lighting</h2>
+<div class="glass-panel p-card-padding rounded-lg h-full flex flex-col">
+<div class="flex gap-2 mb-6" id="dualModeTabs">
+<button class="flex-1 py-2 px-4 rounded border border-outline-variant text-on-surface-variant hover:border-on-surface-variant font-label-md text-label-md flex items-center justify-center gap-2 transition-colors" data-dualmode="4" onclick="setMode(4)">
+<span class="material-symbols-outlined text-sm">wb_sunny</span> Daily White
+                                    </button>
+<button class="flex-1 py-2 px-4 rounded border border-outline-variant text-on-surface-variant hover:border-on-surface-variant font-label-md text-label-md flex items-center justify-center gap-2 transition-colors" data-dualmode="5" onclick="setMode(5)">
+<span class="material-symbols-outlined text-sm">celebration</span> Festival RGB
+                                    </button>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-3">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface">Current State</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-bright text-on-surface" id="dualModeState">Mode unknown</span>
+</div>
+<p class="font-body-md text-[12px] text-on-surface-variant m-0">Color, brightness and festival pattern are set from the full LED Matrix panel below.</p>
+<button class="w-full py-2 rounded border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary font-label-sm text-label-sm transition-colors flex items-center justify-center gap-1" onclick="document.getElementById('ledAdvanced').scrollIntoView({behavior:'smooth'})">
+Open full LED control <span class="material-symbols-outlined text-sm">arrow_downward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- LED MATRIX ADVANCED CONTROL (Full width) -->
+<div class="col-span-12 flex flex-col gap-stack-md mt-4" id="ledAdvanced">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<h2 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">LED Matrix &amp; Signage — Full Control</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant" id="ledCmdHint">UART · 115200 baud · Aries link</span>
+</div>
+
+<!-- Display Mode grid -->
+<div class="glass-panel p-card-padding rounded-lg">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-3">Display Mode</div>
+<div class="grid grid-cols-3 md:grid-cols-9 gap-2" id="modeGrid">
+<button class="mode-btn" data-mode="0" onclick="setMode(0)"><span class="material-symbols-outlined">power_settings_new</span>Off</button>
+<button class="mode-btn" data-mode="1" onclick="setMode(1)"><span class="material-symbols-outlined">swap_horiz</span>Scroll</button>
+<button class="mode-btn" data-mode="2" onclick="setMode(2)"><span class="material-symbols-outlined">flag</span>Flag</button>
+<button class="mode-btn" data-mode="3" onclick="setMode(3)"><span class="material-symbols-outlined">equalizer</span>EQ</button>
+<button class="mode-btn" data-mode="4" onclick="setMode(4)"><span class="material-symbols-outlined">circle</span>Solid</button>
+<button class="mode-btn" data-mode="5" onclick="setMode(5)"><span class="material-symbols-outlined">celebration</span>Festival</button>
+<button class="mode-btn" data-mode="6" onclick="setMode(6)"><span class="material-symbols-outlined">auto_awesome</span>Figures</button>
+<button class="mode-btn" data-mode="7" onclick="setMode(7)"><span class="material-symbols-outlined">device_thermostat</span>Temp/Hum</button>
+<button class="mode-btn" data-mode="8" onclick="setMode(8)"><span class="material-symbols-outlined">water_drop</span>Soil</button>
+</div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Scrolling Text -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col gap-3">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-1">Scrolling Text</div>
+<input type="text" id="word1" placeholder="Word 1" value="VEGA" class="bg-surface border border-outline-variant rounded px-3 py-2 text-body-md text-on-surface placeholder-on-surface-variant focus:ring-0 focus:border-primary">
+<input type="text" id="word2" placeholder="Word 2" value="SMART" class="bg-surface border border-outline-variant rounded px-3 py-2 text-body-md text-on-surface placeholder-on-surface-variant focus:ring-0 focus:border-primary">
+<input type="text" id="word3" placeholder="Word 3" value="CITY" class="bg-surface border border-outline-variant rounded px-3 py-2 text-body-md text-on-surface placeholder-on-surface-variant focus:ring-0 focus:border-primary">
+<button class="w-full py-2 rounded border border-primary bg-primary/10 text-primary font-label-md text-label-md" onclick="sendText()">Update Text</button>
+
+<div class="flex justify-between items-baseline mt-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Scroll Speed</span>
+<span class="font-label-md text-label-md text-primary" id="speedVal">0 · Static</span>
+</div>
+<input type="range" class="vega-range" id="speedSlider" min="0" max="100" value="0" step="1" oninput="onSpeedInput(this.value)" onchange="sendSpeed(this.value)">
+
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Text Size</div>
+<div class="grid grid-cols-4 gap-2" id="sizeButtons">
+<button class="chip-btn" data-size="0" onclick="setSize('0',this)">S</button>
+<button class="chip-btn active" data-size="1" onclick="setSize('1',this)">M</button>
+<button class="chip-btn" data-size="2" onclick="setSize('2',this)">L</button>
+<button class="chip-btn" data-size="3" onclick="setSize('3',this)">XL</button>
+</div>
+</div>
+
+<!-- Solid Color -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col gap-3">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-1">Solid Color</div>
+<div class="grid grid-cols-6 gap-2" id="presetSwatches">
+<button class="swatch-dot" style="background:#ff6b6b" data-hex="FF6B6B" aria-label="Red" onclick="selectColor('FF6B6B',this)"></button>
+<button class="swatch-dot" style="background:#ffb95f" data-hex="FFB95F" aria-label="Amber" onclick="selectColor('FFB95F',this)"></button>
+<button class="swatch-dot" style="background:#f6e05e" data-hex="F6E05E" aria-label="Yellow" onclick="selectColor('F6E05E',this)"></button>
+<button class="swatch-dot" style="background:#4cd7f6" data-hex="4CD7F6" aria-label="Cyan" onclick="selectColor('4CD7F6',this)"></button>
+<button class="swatch-dot" style="background:#5b8def" data-hex="5B8DEF" aria-label="Blue" onclick="selectColor('5B8DEF',this)"></button>
+<button class="swatch-dot" style="background:#4edea3" data-hex="4EDEA3" aria-label="Green" onclick="selectColor('4EDEA3',this)"></button>
+</div>
+<div class="flex items-center gap-3 mt-1">
+<input type="color" id="colorPicker" class="swatch-custom" value="#969696" onchange="sendColor(this.value)">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Or pick a custom color</span>
+</div>
+</div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Figures -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col gap-3">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-1">Figures</div>
+<div class="grid grid-cols-2 gap-2" id="figureModeButtons">
+<button class="chip-btn active" data-figmode="1" onclick="setFigureMode('1',this)">Animated</button>
+<button class="chip-btn" data-figmode="0" onclick="setFigureMode('0',this)">Static</button>
+</div>
+<div class="grid grid-cols-3 md:grid-cols-5 gap-2" id="figureButtons">
+<button class="mode-btn" data-figure="1" onclick="selectFigure('1',this)"><span class="material-symbols-outlined">star</span>Star</button>
+<button class="mode-btn" data-figure="2" onclick="selectFigure('2',this)"><span class="material-symbols-outlined">favorite</span>Heart</button>
+<button class="mode-btn" data-figure="3" onclick="selectFigure('3',this)"><span class="material-symbols-outlined">diamond</span>Diamond</button>
+<button class="mode-btn" data-figure="4" onclick="selectFigure('4',this)"><span class="material-symbols-outlined">sentiment_satisfied</span>Smiley</button>
+<button class="mode-btn" data-figure="5" onclick="selectFigure('5',this)"><span class="material-symbols-outlined">park</span>Tree</button>
+</div>
+</div>
+
+<!-- Festival Lights -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col gap-3">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-1">Festival Lights</div>
+<div class="grid grid-cols-2 gap-2" id="festivalButtons">
+<button class="mode-btn" data-festival="1" onclick="selectFestival('1',this)"><span class="material-symbols-outlined">grain</span>Confetti</button>
+<button class="mode-btn" data-festival="2" onclick="selectFestival('2',this)"><span class="material-symbols-outlined">palette</span>Rainbow</button>
+<button class="mode-btn" data-festival="3" onclick="selectFestival('3',this)"><span class="material-symbols-outlined">bolt</span>Comet</button>
+<button class="mode-btn" data-festival="4" onclick="selectFestival('4',this)"><span class="material-symbols-outlined">auto_awesome</span>Twinkle</button>
+</div>
+</div>
+</div>
+
+<!-- Sensor History -->
+<div class="glass-panel p-card-padding rounded-lg">
+<div class="flex items-center justify-between mb-3">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Sensor History</div>
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant"><span class="w-2 h-2 rounded-full inline-block" style="background:#ffb95f"></span>Temp °C</span>
+<span class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant"><span class="w-2 h-2 rounded-full inline-block" style="background:#4cd7f6"></span>Humidity %</span>
+<span class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant"><span class="w-2 h-2 rounded-full inline-block" style="background:#4edea3"></span>Soil %</span>
+</div>
+</div>
+<canvas id="ledHistoryChart" height="200"></canvas>
+<div class="flex justify-between items-center mt-3 font-label-sm text-label-sm text-on-surface-variant">
+<span id="historyCount">0 readings</span>
+<button class="px-3 py-1 rounded border border-outline-variant hover:border-on-surface-variant" onclick="clearHistory()">Clear</button>
+</div>
+</div>
+</div>
+
+<!-- 5. FAULT LOG (Col 9-12) -->
+<div class="col-span-12 xl:col-span-4 flex flex-col gap-stack-md mt-4 xl:mt-0">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<h2 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Fault Log</h2>
+<span class="bg-surface-bright px-2 py-0.5 rounded text-xs font-label-sm text-on-surface">3 Events</span>
+</div>
+<div class="flex flex-col gap-2 overflow-y-auto max-h-[300px] pr-2">
+<!-- Fault 1: Error -->
+<div class="glass-panel p-3 rounded flex gap-3 relative overflow-hidden border-l-4 border-l-error">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
+<span class="material-symbols-outlined text-error" style="font-size: 20px;">error</span>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-md text-label-md text-on-surface">ERR-PWR-04</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">10:42 AM</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-2">Solar inverter timeout detected.</p>
+<button class="text-xs font-label-sm uppercase px-2 py-1 rounded border border-error/50 text-error hover:bg-error/10">Acknowledge</button>
+</div>
+</div>
+<!-- Fault 2: Secondary/Amber -->
+<div class="glass-panel p-3 rounded flex gap-3 relative overflow-hidden border-l-4 border-l-secondary">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">warning</span>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-md text-label-md text-on-surface">WARN-ENV-12</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">09:15 AM</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-2">Noise threshold exceeded (&gt;80dB).</p>
+<button class="text-xs font-label-sm uppercase px-2 py-1 rounded border border-secondary/50 text-secondary hover:bg-secondary/10">Acknowledge</button>
+</div>
+</div>
+<!-- Fault 3: Tertiary/Info -->
+<div class="glass-panel p-3 rounded flex gap-3 relative overflow-hidden border-l-4 border-l-tertiary">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary"></div>
+<span class="material-symbols-outlined text-tertiary" style="font-size: 20px;">info</span>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-md text-label-md text-on-surface">INFO-NET-01</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">08:00 AM</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-2">Firmware update pending.</p>
+<button class="text-xs font-label-sm uppercase px-2 py-1 rounded border border-tertiary/50 text-tertiary hover:bg-tertiary/10">Acknowledge</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script>
+// ============================================================
+// VEGA SACS OS · Pole Management — LED Matrix live control
+// Talks to the same firmware WebSocket protocol as the IoT
+// hardware demo dashboard: /ws?role=dashboard[&token=...]
+// ============================================================
+const TOKEN = new URLSearchParams(location.search).get('token') || '';
+const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+const wsUrl = `${wsProtocol}//${location.host}/ws?role=dashboard` + (TOKEN ? `&token=${encodeURIComponent(TOKEN)}` : '');
+
+let socket;
+let reconnectDelay = 1000;
+let currentMode = null; // 0-8, mirrors firmware Display Mode
+
+function connect() {
+  socket = new WebSocket(wsUrl);
+  socket.addEventListener('open', () => { setConn(true); reconnectDelay = 1000; });
+  socket.addEventListener('close', () => {
+    setConn(false);
+    setTimeout(connect, reconnectDelay);
+    reconnectDelay = Math.min(reconnectDelay * 1.5, 10000);
+  });
+  socket.addEventListener('error', () => socket.close());
+  socket.addEventListener('message', (event) => {
+    try {
+      const msg = JSON.parse(event.data);
+      if (msg.type === 'sensor') updateSensors(msg);
+      if (msg.type === 'state' && typeof msg.mode !== 'undefined') setMode(Number(msg.mode), false);
+    } catch (e) {}
+  });
+}
+
+function setConn(ok) {
+  const wrap = document.getElementById('nodeStatusWrap');
+  const dot = document.getElementById('nodeStatusDot');
+  const label = document.getElementById('nodeStatusLabel');
+  if (!wrap) return;
+  label.textContent = ok ? 'ONLINE' : 'RECONNECTING';
+  wrap.classList.toggle('bg-tertiary/10', ok);
+  wrap.classList.toggle('border-tertiary/20', ok);
+  wrap.classList.toggle('bg-error/10', !ok);
+  wrap.classList.toggle('border-error/20', !ok);
+  dot.classList.toggle('bg-tertiary', ok);
+  dot.classList.toggle('bg-error', !ok);
+  dot.classList.toggle('animate-pulse', ok);
+  label.classList.toggle('text-tertiary', ok);
+  label.classList.toggle('text-error', !ok);
+}
+
+function sendCmd(cmd) {
+  if (socket && socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ cmd }));
+}
+
+// ---------- Telemetry ----------
+function flashValue(id, newVal) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.textContent !== String(newVal)) {
+    el.textContent = newVal;
+    el.classList.add('flash');
+    setTimeout(() => el.classList.remove('flash'), 500);
+  }
+}
+
+function updateSensors(msg) {
+  flashValue('liveTemp', msg.temp);
+  flashValue('liveHum', msg.hum);
+  flashValue('liveSoil', msg.soil);
+  recordHistory(msg.temp, msg.hum, msg.soil);
+}
+
+// ---------- Display mode (Off/Scroll/Flag/EQ/Solid/Festival/Figures/Temp-Hum/Soil) ----------
+const MODE_NAMES = { 0: 'Off', 1: 'Scroll Text', 2: 'Flag', 3: 'EQ', 4: 'Daily White / Solid', 5: 'Festival RGB', 6: 'Figures', 7: 'Temp / Hum', 8: 'Soil' };
+
+function setMode(mode, send = true) {
+  currentMode = mode;
+  if (send) sendCmd(String(mode));
+
+  document.querySelectorAll('#modeGrid .mode-btn').forEach(b => {
+    b.classList.toggle('active', Number(b.dataset.mode) === mode);
+  });
+
+  document.querySelectorAll('#dualModeTabs [data-dualmode]').forEach(b => {
+    const on = Number(b.dataset.dualmode) === mode;
+    b.classList.toggle('border-primary', on);
+    b.classList.toggle('bg-primary/10', on);
+    b.classList.toggle('text-primary', on);
+    b.classList.toggle('border-outline-variant', !on);
+    b.classList.toggle('text-on-surface-variant', !on);
+  });
+  const stateEl = document.getElementById('dualModeState');
+  if (stateEl) stateEl.textContent = MODE_NAMES[mode] || 'Mode unknown';
+
+  document.querySelectorAll('#ledPowerButtons [data-power]').forEach(b => {
+    const isOn = mode !== 0 && b.dataset.power === 'on';
+    const isOff = mode === 0 && b.dataset.power === 'off';
+    b.classList.toggle('bg-primary-container', isOn);
+    b.classList.toggle('text-on-primary-container', isOn);
+    b.classList.toggle('bg-surface-bright', isOff);
+    b.classList.toggle('text-on-surface', isOff || isOn);
+    if (!isOn && !isOff) { b.classList.remove('bg-primary-container', 'text-on-primary-container', 'bg-surface-bright'); b.classList.add('text-on-surface-variant'); }
+  });
+}
+
+function ledPower(which) {
+  if (which === 'on') setMode(currentMode && currentMode !== 0 ? currentMode : 1);
+  else if (which === 'off') setMode(0);
+  else {
+    // AUTO is a scheduling concept the current firmware demo doesn't expose yet —
+    // reflected visually only, no command is sent.
+    document.querySelectorAll('#ledPowerButtons [data-power]').forEach(b => {
+      b.classList.remove('bg-primary-container', 'text-on-primary-container', 'bg-surface-bright');
+      b.classList.toggle('text-on-surface', b.dataset.power === 'auto');
+      b.classList.toggle('text-on-surface-variant', b.dataset.power !== 'auto');
+    });
+  }
+}
+
+// ---------- Scrolling text ----------
+function sendText() {
+  const w1 = document.getElementById('word1').value.trim() || 'VEGA';
+  const w2 = document.getElementById('word2').value.trim() || 'SMART';
+  const w3 = document.getElementById('word3').value.trim() || 'CITY';
+  sendCmd(w1 + ' ' + w2 + ' ' + w3);
+}
+
+function onSpeedInput(val) {
+  document.getElementById('speedVal').textContent = (val == 0) ? '0 · Static' : val + ' / 100';
+}
+function sendSpeed(val) { sendCmd('SPEED:' + val); }
+
+function setSize(size, btn) {
+  document.querySelectorAll('#sizeButtons .chip-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  sendCmd('TEXTSIZE:' + size);
+}
+
+// ---------- Solid color ----------
+function selectColor(hex, btn) {
+  document.querySelectorAll('#presetSwatches .swatch-dot').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  sendCmd('COLOR:' + hex.toUpperCase());
+}
+function sendColor(hex) {
+  document.querySelectorAll('#presetSwatches .swatch-dot').forEach(b => b.classList.remove('active'));
+  sendCmd('COLOR:' + hex.replace('#', '').toUpperCase());
+}
+
+// ---------- Figures ----------
+function setFigureMode(mode, btn) {
+  document.querySelectorAll('#figureModeButtons .chip-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  sendCmd('FIGUREMODE:' + mode);
+}
+function selectFigure(fig, btn) {
+  document.querySelectorAll('#figureButtons .mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  sendCmd('FIGURE:' + fig);
+}
+
+// ---------- Festival patterns ----------
+function selectFestival(fest, btn) {
+  document.querySelectorAll('#festivalButtons .mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  sendCmd('FESTIVAL:' + fest);
+}
+
+// ---------- Sensor history chart ----------
+const HISTORY_MAX = 120;
+const history = { t: [], temp: [], hum: [], soil: [] };
+
+function recordHistory(temp, hum, soil) {
+  let nTemp = parseFloat(temp), nHum = parseFloat(hum), nSoil = parseFloat(soil);
+  // Firmware sends -1 for a failed/invalid sensor read — treat as a gap, not a real value.
+  if (isNaN(nTemp) || nTemp < 0) nTemp = NaN;
+  if (isNaN(nHum) || nHum < 0) nHum = NaN;
+  if (isNaN(nSoil) || nSoil < 0) nSoil = NaN;
+  if (isNaN(nTemp) && isNaN(nHum) && isNaN(nSoil)) return;
+  history.t.push(Date.now());
+  history.temp.push(isNaN(nTemp) ? null : nTemp);
+  history.hum.push(isNaN(nHum) ? null : nHum);
+  history.soil.push(isNaN(nSoil) ? null : nSoil);
+  if (history.t.length > HISTORY_MAX) {
+    history.t.shift(); history.temp.shift(); history.hum.shift(); history.soil.shift();
+  }
+  document.getElementById('historyCount').textContent = history.t.length + ' readings';
+  drawHistoryChart();
+}
+
+function clearHistory() {
+  history.t.length = 0; history.temp.length = 0; history.hum.length = 0; history.soil.length = 0;
+  document.getElementById('historyCount').textContent = '0 readings';
+  drawHistoryChart();
+}
+
+function drawHistoryChart() {
+  const canvas = document.getElementById('ledHistoryChart');
+  if (!canvas) return;
+  const wrap = canvas.parentElement;
+  const cssWidth = wrap.clientWidth;
+  const cssHeight = 200;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = cssWidth * dpr;
+  canvas.height = cssHeight * dpr;
+  canvas.style.width = cssWidth + 'px';
+  canvas.style.height = cssHeight + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, cssWidth, cssHeight);
+
+  const pad = { l: 30, r: 8, t: 10, b: 18 };
+  const plotW = cssWidth - pad.l - pad.r;
+  const plotH = cssHeight - pad.t - pad.b;
+
+  if (history.t.length < 2) {
+    ctx.fillStyle = 'rgba(188,201,205,0.7)';
+    ctx.font = '12px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Waiting for sensor readings…', cssWidth / 2, cssHeight / 2);
+    return;
+  }
+
+  const yMin = 0, yMax = 100;
+  ctx.strokeStyle = 'rgba(134,147,151,0.35)';
+  ctx.lineWidth = 1;
+  ctx.fillStyle = 'rgba(188,201,205,0.8)';
+  ctx.font = '9px JetBrains Mono, monospace';
+  ctx.textAlign = 'right';
+  [0, 25, 50, 75, 100].forEach(v => {
+    const y = pad.t + plotH - ((v - yMin) / (yMax - yMin)) * plotH;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(cssWidth - pad.r, y); ctx.stroke();
+    ctx.fillText(String(v), pad.l - 4, y + 3);
+  });
+
+  function plotSeries(values, color) {
+    ctx.beginPath();
+    let started = false;
+    values.forEach((v, i) => {
+      const x = pad.l + (i / (values.length - 1)) * plotW;
+      if (v === null) { started = false; return; }
+      const y = pad.t + plotH - ((v - yMin) / (yMax - yMin)) * plotH;
+      if (!started) { ctx.moveTo(x, y); started = true; }
+      else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+  }
+
+  plotSeries(history.temp, '#ffb95f');
+  plotSeries(history.hum, '#4cd7f6');
+  plotSeries(history.soil, '#4edea3');
+}
+
+window.addEventListener('resize', drawHistoryChart);
+
+connect();
+setMode(0, false); // neutral UI state until the first live state/sensor message arrives
+</script>
+</body></html>

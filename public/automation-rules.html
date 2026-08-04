@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VEGA SACS / CITY GOVERNANCE OS - Automation Rules</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-on-surface": "#283044",
+                      "surface-variant": "#2d3449",
+                      "on-primary": "#003640",
+                      "error": "#ffb4ab",
+                      "surface-dim": "#0b1326",
+                      "on-primary-fixed-variant": "#004e5c",
+                      "on-surface-variant": "#bcc9cd",
+                      "primary-container": "#06b6d4",
+                      "primary-fixed-dim": "#4cd7f6",
+                      "error-container": "#93000a",
+                      "tertiary-fixed-dim": "#4edea3",
+                      "secondary-fixed": "#ffddb8",
+                      "on-surface": "#dae2fd",
+                      "outline": "#869397",
+                      "inverse-primary": "#00687a",
+                      "surface": "#0b1326",
+                      "surface-bright": "#31394d",
+                      "secondary-fixed-dim": "#ffb95f",
+                      "surface-container-highest": "#2d3449",
+                      "on-secondary-fixed": "#2a1700",
+                      "on-error-container": "#ffdad6",
+                      "on-tertiary-fixed-variant": "#005236",
+                      "primary-fixed": "#acedff",
+                      "tertiary-fixed": "#6ffbbe",
+                      "tertiary": "#4edea3",
+                      "on-tertiary-container": "#00452e",
+                      "on-tertiary": "#003824",
+                      "on-background": "#dae2fd",
+                      "surface-container-high": "#222a3d",
+                      "secondary-container": "#ee9800",
+                      "surface-tint": "#4cd7f6",
+                      "surface-container-low": "#131b2e",
+                      "primary": "#4cd7f6",
+                      "on-secondary-fixed-variant": "#653e00",
+                      "on-primary-fixed": "#001f26",
+                      "outline-variant": "#3d494c",
+                      "on-secondary-container": "#5b3800",
+                      "on-tertiary-fixed": "#002113",
+                      "surface-container": "#171f33",
+                      "background": "#0b1326",
+                      "secondary": "#ffb95f",
+                      "surface-container-lowest": "#060e20",
+                      "on-secondary": "#472a00",
+                      "on-primary-container": "#00424f",
+                      "inverse-surface": "#dae2fd",
+                      "tertiary-container": "#1bbd85",
+                      "on-error": "#690005"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-md": "16px",
+                      "margin-page": "24px",
+                      "unit": "4px",
+                      "card-padding": "16px",
+                      "stack-sm": "8px",
+                      "stack-lg": "24px",
+                      "sidebar-width": "240px",
+                      "top-nav-height": "64px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "headline-xl": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-sm": ["JetBrains Mono"],
+                      "label-md": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "label-sm": ["10px", {"lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background-color: theme('colors.surface-container-highest');
+            border: 1px solid theme('colors.outline-variant');
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .neon-border-focus:focus-within { border-color: theme('colors.primary-container'); box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2); }
+        /* Custom scrollbar for deep-sea theme */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: theme('colors.surface'); }
+        ::-webkit-scrollbar-thumb { background: theme('colors.surface-container-high'); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: theme('colors.surface-bright'); }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<header class="bg-surface-container-high dark:bg-surface-container-high docked full-width top-0 border-b border-outline-variant dark:border-outline-variant flat no shadows fixed left-0 w-full z-50 flex items-center justify-between px-margin-page">
+<div class="flex items-center gap-stack-md">
+<img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBze4A2CRxYkVIEM0V-QeCapzvm671jv48CDD7kWlXbsoAOhVkTno-c4fayfyeel4gnhrzzQWBA9qnDW7ezh6_9wnZOgdzwLahb0nBYkJG72E0Cq4h3VAFAB9agrSXvYImUvpNnSxGBwLSGNGhXOVfWQCYiUB-KBvCI1jy75vOxihF1RsyBz47o75HXGmchYH4-JIVEukdscTmL-CGKpHvi2GrMDoZ6KhkdpARsWXKnr9HZiIbzWXNey_islXJbiuxW3TQ"/>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight truncate hidden lg:block">VEGA SACS OS</span>
+</div>
+<nav class="hidden md:flex items-center gap-stack-lg h-full">
+<!-- No active tab: this screen is reached via the sidebar, not the top nav -->
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="fleet-overview.html">Fleet Overview</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="pole-management.html">Pole Management</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="energy-analytics.html">Energy Analytics</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="fault-reporting.html">Fault Reporting</a>
+</nav>
+<div class="flex items-center gap-stack-md">
+<div class="hidden lg:flex items-center bg-surface px-3 py-1.5 rounded border border-outline-variant neon-border-focus transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md text-on-surface py-0 px-2 w-48 placeholder-on-surface-variant" placeholder="Search node ID..." type="text"/>
+</div>
+<div class="hidden xl:flex items-center gap-unit bg-secondary-container/10 border border-secondary-container rounded-full px-3 py-1">
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+<span class="font-label-md text-label-md text-secondary-container">ACTION REQUIRED: 5 NODES</span>
+</div>
+<button class="bg-error text-on-error font-label-md text-label-md px-4 py-2 rounded hover:bg-error-container hover:text-on-error-container transition-colors duration-200 border border-transparent hover:border-error flex items-center gap-unit">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<span class="hidden sm:inline">Emergency Override</span>
+</button>
+<div class="flex items-center gap-unit border-l border-outline-variant pl-stack-md ml-stack-sm">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="ml-2 w-8 h-8 rounded bg-surface-variant overflow-hidden border border-outline-variant">
+<img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUAmrtckNdGlZbcsxuKV-QSqvNgOs5dSuNujTtfi8sp8GXJ50BqQdyyOoFzHAa3BAKjluyiDBaiDPhGk5u0ngyHFD5KQYcIV73eq5jyPIPjHx2uHQU4y5Rj_OO4VvCC5baCCTPwjatztv4GPmZ7vU-BGUIc6UXCdbG4HJKFGSwxQMNiufM__faz6UyoY4_H2WH60cbYMvgtWLywG6BVybl6bI2bLaHUR5ECT9PbwqQWvAh8Vm5FgH7WphR7rcrUg-MrUI"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar & Main Content Wrapper -->
+<div class="flex pt-40 h-screen">
+<!-- SideNavBar -->
+<aside class="bg-surface-container dark:bg-surface-container fixed left-0 top-40 h-[calc(100vh-160px)] w-sidebar-width border-r border-outline-variant dark:border-outline-variant flat no shadows flex flex-col justify-between py-stack-lg z-40 hidden md:flex">
+<div class="flex flex-col gap-unit">
+<nav class="flex flex-col">
+<!-- Active Nav Item -->
+<a class="flex items-center gap-stack-md text-primary dark:text-primary border-l-4 border-primary bg-surface-container-highest dark:bg-surface-container-highest px-4 py-3 font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="automation-rules.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud_download</span>
+                    Automation Rules
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="user-access-management.html">
+<span class="material-symbols-outlined">manage_accounts</span>
+                    User &amp; Access Management
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="integrations.html">
+<span class="material-symbols-outlined">extension</span>
+                    Integrations
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="system-logs.html">
+<span class="material-symbols-outlined">description</span>
+                    System Logs
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="billing-reporting.html">
+<span class="material-symbols-outlined">receipt_long</span>
+                    Billing/Reporting
+                </a>
+</nav>
+</div>
+<div class="flex flex-col px-4 gap-stack-md">
+<button class="w-full bg-primary-container text-on-primary-container font-label-md text-label-md py-2 px-4 rounded border border-transparent hover:border-primary-container hover:bg-transparent hover:text-primary-container transition-all duration-200">
+                + New Pole Node
+            </button>
+<nav class="flex flex-col gap-unit pt-stack-sm border-t border-outline-variant">
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant py-2 border-l-4 border-transparent font-label-md text-label-md hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+                    Help
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant py-2 border-l-4 border-transparent font-label-md text-label-md hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+                    Sign Out
+                </a>
+</nav>
+<div class="flex items-center gap-stack-sm pt-stack-md border-t border-outline-variant mt-2">
+<div class="w-10 h-10 rounded bg-surface-variant overflow-hidden border border-outline-variant shrink-0">
+<img alt="Admin User" class="w-full h-full object-cover" data-alt="A small, stylized profile icon of an admin user." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEAaBe55SHcjhNNKqSFNokGbcvFUVyJq6dHzjKXS2rMs9GF9lrZpwI4VjQ56ElKh_U0mDsuOI1BgJAMsMZlE6Q_iC6DkxfZqu6KPkCwvz-FUm2kw41rhw9yDROOXQhDu6boGFPaZx1IN2-Rx6e9uR2kk7TN71ELds82q9sakE7UmEdizvQXPJAv5AWg9GYstl1KY43VicrT1FuM4Z296y_uXkZT9kin8JWrUobk7_t027TQ9HHdADj6A"/>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="font-label-md text-label-md text-on-surface truncate">Administrator</span>
+<span class="font-body-md text-[12px] text-on-surface-variant truncate">Super User</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-sidebar-width overflow-y-auto bg-background p-margin-page">
+<!-- Page Header -->
+<div class="flex items-start justify-between mb-stack-lg">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-2">Automation Rules</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Manage autonomous system responses and threshold-based behaviors across the municipal network.</p>
+</div>
+<button class="bg-primary text-on-primary-fixed font-label-md text-label-md px-5 py-2.5 rounded-DEFAULT hover:bg-primary-fixed-dim transition-all flex items-center gap-2 uppercase tracking-wide shadow-[0_0_15px_rgba(76,215,246,0.15)] inner-stroke">
+<span class="material-symbols-outlined text-[18px]">add_task</span>
+                + New Rule
+            </button>
+</div>
+<!-- KPI Strip -->
+<div class="grid grid-cols-4 gap-gutter mb-stack-lg">
+<div class="bg-surface-container-low border border-outline-variant/30 rounded-DEFAULT p-card-padding flex flex-col justify-between relative overflow-hidden group hover:border-outline-variant transition-colors">
+<div class="absolute -right-4 -top-4 text-primary/5 group-hover:text-primary/10 transition-colors">
+<span class="material-symbols-outlined text-[100px]">account_tree</span>
+</div>
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-4 relative z-10">Active Rules</h3>
+<div class="flex items-baseline gap-2 relative z-10">
+<span class="font-display-lg text-display-lg text-primary">18</span>
+<span class="font-label-sm text-label-sm text-tertiary flex items-center"><span class="material-symbols-outlined text-[14px]">arrow_upward</span> 2</span>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant/30 rounded-DEFAULT p-card-padding flex flex-col justify-between relative overflow-hidden group hover:border-outline-variant transition-colors">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-4 relative z-10">Triggered Today</h3>
+<div class="flex items-baseline gap-2 relative z-10">
+<span class="font-display-lg text-display-lg text-on-surface">142</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Executions</span>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant/30 rounded-DEFAULT p-card-padding flex flex-col justify-between relative overflow-hidden group hover:border-outline-variant transition-colors">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-4 relative z-10">Poles Under Automation</h3>
+<div class="flex items-baseline gap-2 relative z-10">
+<span class="font-display-lg text-display-lg text-on-surface">1,204</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/ 1,250</span>
+</div>
+<!-- Mini Progress -->
+<div class="w-full h-1 bg-surface-variant mt-3 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[96%]"></div>
+</div>
+</div>
+<div class="bg-surface-container-highest border border-error/20 rounded-DEFAULT p-card-padding flex flex-col justify-between relative overflow-hidden group shadow-[inset_0_0_20px_rgba(255,180,171,0.05)]">
+<h3 class="font-label-sm text-label-sm text-error uppercase tracking-wider mb-4 relative z-10 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                    Failed Executions (24h)
+                </h3>
+<div class="flex items-baseline gap-2 relative z-10">
+<span class="font-display-lg text-display-lg text-error">3</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant underline cursor-pointer hover:text-on-surface">View Logs</span>
+</div>
+</div>
+</div>
+<!-- Rule Templates Row -->
+<section class="mb-stack-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-md flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">magic_button</span>
+                Quick Templates
+            </h2>
+<div class="grid grid-cols-4 gap-gutter">
+<!-- Template 1 -->
+<div class="bg-surface-container border border-outline-variant/50 hover:border-primary/50 transition-colors p-4 flex flex-col gap-4 rounded-DEFAULT">
+<div class="flex items-start justify-between">
+<div class="w-8 h-8 rounded bg-secondary-container/20 text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">wb_twilight</span>
+</div>
+</div>
+<div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Sunset Lighting</h4>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Dim Daily White to 70% based on astronomical clock.</p>
+</div>
+<button class="mt-auto border border-outline-variant text-on-surface-variant hover:text-primary hover:border-primary font-label-sm text-label-sm uppercase py-1.5 px-3 rounded w-full transition-colors">Use Template</button>
+</div>
+<!-- Template 2 -->
+<div class="bg-surface-container border border-outline-variant/50 hover:border-primary/50 transition-colors p-4 flex flex-col gap-4 rounded-DEFAULT">
+<div class="flex items-start justify-between">
+<div class="w-8 h-8 rounded bg-primary-container/20 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">water_drop</span>
+</div>
+</div>
+<div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Low Soil Moisture</h4>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Activate Irrigation Pump when soil moisture drops below 20%.</p>
+</div>
+<button class="mt-auto border border-outline-variant text-on-surface-variant hover:text-primary hover:border-primary font-label-sm text-label-sm uppercase py-1.5 px-3 rounded w-full transition-colors">Use Template</button>
+</div>
+<!-- Template 3 -->
+<div class="bg-surface-container border border-outline-variant/50 hover:border-primary/50 transition-colors p-4 flex flex-col gap-4 rounded-DEFAULT">
+<div class="flex items-start justify-between">
+<div class="w-8 h-8 rounded bg-tertiary-container/20 text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">celebration</span>
+</div>
+</div>
+<div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Festival Mode</h4>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Switch LED Matrix to Festival RGB pattern during mapped events.</p>
+</div>
+<button class="mt-auto border border-outline-variant text-on-surface-variant hover:text-primary hover:border-primary font-label-sm text-label-sm uppercase py-1.5 px-3 rounded w-full transition-colors">Use Template</button>
+</div>
+<!-- Template 4 -->
+<div class="bg-surface-container border border-outline-variant/50 hover:border-primary/50 transition-colors p-4 flex flex-col gap-4 rounded-DEFAULT">
+<div class="flex items-start justify-between">
+<div class="w-8 h-8 rounded bg-surface-variant text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">air</span>
+</div>
+</div>
+<div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">High AQI Boost</h4>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Engage Fogging System when AQI exceeds 150 for &gt;10 mins.</p>
+</div>
+<button class="mt-auto border border-outline-variant text-on-surface-variant hover:text-primary hover:border-primary font-label-sm text-label-sm uppercase py-1.5 px-3 rounded w-full transition-colors">Use Template</button>
+</div>
+</div>
+</section>
+<!-- Rule List Table -->
+<section class="mb-stack-lg bg-surface-container border border-outline-variant/50 rounded-DEFAULT overflow-hidden flex flex-col">
+<div class="p-4 border-b border-outline-variant/50 bg-surface-container-high flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md text-on-surface">Configured Rules</h2>
+<div class="flex gap-2">
+<button class="p-1.5 rounded bg-surface border border-outline-variant hover:border-primary text-on-surface-variant transition-colors"><span class="material-symbols-outlined text-[18px]">filter_list</span></button>
+<button class="p-1.5 rounded bg-surface border border-outline-variant hover:border-primary text-on-surface-variant transition-colors"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</div>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr>
+<th class="w-12 px-4 py-3 border-b border-outline-variant bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider"></th>
+<th class="px-4 py-3 border-b border-outline-variant bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-4 py-3 border-b border-outline-variant bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Rule Name</th>
+<th class="px-4 py-3 border-b border-outline-variant bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Trigger</th>
+<th class="px-4 py-3 border-b border-outline-variant bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Condition</th>
+<th class="px-4 py-3 border-b border-outline-variant bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Action Subsystem</th>
+<th class="px-4 py-3 border-b border-outline-variant bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Scope</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md divide-y divide-outline-variant/30">
+<!-- Row 1: Expanded -->
+<tr class="hover:bg-surface-variant/30 transition-colors group cursor-pointer bg-surface-variant/10">
+<td class="px-4 py-3 text-center text-on-surface-variant"><span class="material-symbols-outlined text-[18px] transition-transform rotate-90">chevron_right</span></td>
+<td class="px-4 py-3">
+<div class="w-8 h-4 bg-primary/20 rounded-full relative border border-primary/50">
+<div class="w-3 h-3 bg-primary rounded-full absolute right-0.5 top-0.5 shadow-[0_0_5px_rgba(76,215,246,0.8)]"></div>
+</div>
+</td>
+<td class="px-4 py-3 font-semibold text-on-surface">AQI Emergency Fogging</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-label-sm uppercase tracking-wider bg-error/10 text-error border border-error/20">Telemetry</span>
+</td>
+<td class="px-4 py-3 font-label-md text-label-md text-on-surface-variant">AQI &gt; 150 <span class="text-outline">AND</span> Temp &gt; 25°C</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center gap-1 bg-surface-bright px-2 py-1 rounded text-on-surface text-label-md font-label-md">
+<span class="material-symbols-outlined text-[14px] text-primary">air</span> Fogging System
+                                </span>
+</td>
+<td class="px-4 py-3 text-on-surface-variant font-label-md">Zone: Industrial (42 Poles)</td>
+</tr>
+<!-- Expanded Content for Row 1 -->
+<tr class="bg-surface-container-lowest/50 border-b-2 border-primary/30 shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.5)]">
+<td class="p-6" colspan="7">
+<div class="grid grid-cols-3 gap-6">
+<div>
+<h5 class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-2">Detailed Action</h5>
+<p class="font-label-md text-on-surface mb-1">Set <span class="text-primary">Fogging System</span> State: <span class="text-tertiary">ON</span> (Cycle: 5m ON, 15m OFF)</p>
+<p class="font-label-md text-on-surface">Set <span class="text-primary">LED Matrix Display</span> Message: <span class="text-secondary">"POOR AIR QUALITY"</span></p>
+</div>
+<div>
+<h5 class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-2">Performance (7d)</h5>
+<div class="flex items-end gap-1 h-12">
+<!-- Fake mini bar chart -->
+<div class="w-4 bg-primary/20 h-[20%] rounded-t"></div>
+<div class="w-4 bg-primary/20 h-[40%] rounded-t"></div>
+<div class="w-4 bg-primary h-[80%] rounded-t shadow-[0_0_8px_rgba(76,215,246,0.4)]"></div>
+<div class="w-4 bg-primary/20 h-[30%] rounded-t"></div>
+<div class="w-4 bg-error h-[100%] rounded-t shadow-[0_0_8px_rgba(255,180,171,0.4)]"></div>
+<div class="w-4 bg-primary/20 h-[10%] rounded-t"></div>
+<div class="w-4 bg-primary/20 h-0 rounded-t"></div>
+</div>
+</div>
+<div class="flex flex-col justify-end items-end gap-2">
+<div class="text-right">
+<div class="font-label-sm text-label-sm text-on-surface-variant">LAST TRIGGERED</div>
+<div class="font-label-md text-on-surface">Today, 14:32:01 UTC</div>
+</div>
+<div class="flex gap-2 mt-2">
+<button class="px-3 py-1 bg-surface border border-outline-variant text-on-surface-variant text-label-sm font-label-sm uppercase rounded hover:text-on-surface transition-colors">Edit</button>
+<button class="px-3 py-1 bg-error/10 border border-error/30 text-error text-label-sm font-label-sm uppercase rounded hover:bg-error/20 transition-colors">Disable</button>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-variant/30 transition-colors group cursor-pointer border-t border-outline-variant/30">
+<td class="px-4 py-3 text-center text-on-surface-variant"><span class="material-symbols-outlined text-[18px] group-hover:text-primary transition-colors">chevron_right</span></td>
+<td class="px-4 py-3">
+<div class="w-8 h-4 bg-surface-variant rounded-full relative border border-outline-variant">
+<div class="w-3 h-3 bg-outline rounded-full absolute left-0.5 top-0.5"></div>
+</div>
+</td>
+<td class="px-4 py-3 font-semibold text-on-surface-variant">Park Path Illumination</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-label-sm uppercase tracking-wider bg-secondary/10 text-secondary border border-secondary/20">Schedule</span>
+</td>
+<td class="px-4 py-3 font-label-md text-label-md text-on-surface-variant">Time = 18:00 <span class="text-outline">UNTIL</span> 06:00</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center gap-1 bg-surface-bright px-2 py-1 rounded text-on-surface-variant text-label-md font-label-md">
+<span class="material-symbols-outlined text-[14px]">lightbulb</span> Daily White
+                                </span>
+</td>
+<td class="px-4 py-3 text-on-surface-variant font-label-md">Group: Park Alpha</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-variant/30 transition-colors group cursor-pointer border-t border-outline-variant/30">
+<td class="px-4 py-3 text-center text-on-surface-variant"><span class="material-symbols-outlined text-[18px] group-hover:text-primary transition-colors">chevron_right</span></td>
+<td class="px-4 py-3">
+<div class="w-8 h-4 bg-primary/20 rounded-full relative border border-primary/50">
+<div class="w-3 h-3 bg-primary rounded-full absolute right-0.5 top-0.5 shadow-[0_0_5px_rgba(76,215,246,0.8)]"></div>
+</div>
+</td>
+<td class="px-4 py-3 font-semibold text-on-surface">Battery Protect Mode</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-label-sm uppercase tracking-wider bg-error/10 text-error border border-error/20">Telemetry</span>
+</td>
+<td class="px-4 py-3 font-label-md text-label-md text-on-surface-variant">Battery &lt; 15%</td>
+<td class="px-4 py-3 flex gap-1">
+<span class="inline-flex items-center gap-1 bg-surface-bright px-2 py-1 rounded text-on-surface text-label-md font-label-md">
+<span class="material-symbols-outlined text-[14px] text-primary">solar_power</span> Solar Charger
+                                </span>
+</td>
+<td class="px-4 py-3 text-on-surface-variant font-label-md">Global (All Nodes)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Execution Log -->
+<section>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-md flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">terminal</span>
+                Recent Executions
+            </h3>
+<div class="bg-surface-container-low border border-outline-variant/30 rounded-DEFAULT p-1 font-label-md text-label-md font-medium">
+<!-- Log Item Header -->
+<div class="grid grid-cols-12 gap-4 px-4 py-2 border-b border-outline-variant/20 text-on-surface-variant font-label-sm uppercase tracking-wider">
+<div class="col-span-2">Timestamp</div>
+<div class="col-span-3">Rule Name</div>
+<div class="col-span-2">Target Node</div>
+<div class="col-span-2">Result</div>
+<div class="col-span-3">Detail</div>
+</div>
+<!-- Log Items -->
+<div class="grid grid-cols-12 gap-4 px-4 py-2.5 border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-colors text-on-surface">
+<div class="col-span-2 text-on-surface-variant">14:32:01.442</div>
+<div class="col-span-3 truncate">AQI Emergency Fogging</div>
+<div class="col-span-2 text-primary">PL-IND-0042</div>
+<div class="col-span-2">
+<span class="inline-flex items-center gap-1 text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Success
+                        </span>
+</div>
+<div class="col-span-3 text-on-surface-variant truncate">Relay closed, pump pressure 42psi.</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-4 py-2.5 border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-colors text-on-surface">
+<div class="col-span-2 text-on-surface-variant">14:32:01.438</div>
+<div class="col-span-3 truncate">AQI Emergency Fogging</div>
+<div class="col-span-2 text-primary">PL-IND-0041</div>
+<div class="col-span-2">
+<span class="inline-flex items-center gap-1 text-error">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Failed
+                        </span>
+</div>
+<div class="col-span-3 text-error truncate">ERR: Valve Actuator Timeout (1500ms)</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-4 py-2.5 border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-colors text-on-surface">
+<div class="col-span-2 text-on-surface-variant">14:15:00.005</div>
+<div class="col-span-3 truncate">Irrigation Cycle A</div>
+<div class="col-span-2 text-primary">PL-PRK-0102</div>
+<div class="col-span-2">
+<span class="inline-flex items-center gap-1 text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Success
+                        </span>
+</div>
+<div class="col-span-3 text-on-surface-variant truncate">Irrigation Pump activated at 450W.</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-4 py-2.5 hover:bg-surface-variant/20 transition-colors text-on-surface">
+<div class="col-span-2 text-on-surface-variant">13:45:22.110</div>
+<div class="col-span-3 truncate">Noise Abatement Alert</div>
+<div class="col-span-2 text-primary">PL-COM-0018</div>
+<div class="col-span-2">
+<span class="inline-flex items-center gap-1 text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Success
+                        </span>
+</div>
+<div class="col-span-3 text-on-surface-variant truncate">LED Matrix Display -&gt; "KEEP NOISE DOWN"</div>
+</div>
+</div>
+<div class="mt-2 text-center">
+<button class="font-label-sm text-label-sm text-primary hover:text-primary-fixed-dim uppercase tracking-widest transition-colors">Load More Logs</button>
+</div>
+</section>
+<!-- Bottom Spacing -->
+<div class="h-12"></div>
+</main>
+</div>
+</body></html>

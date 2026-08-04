@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEGA SACS OS</title>
+<meta http-equiv="refresh" content="0; url=pole-management.html">
+<style>
+  body { margin:0; height:100vh; display:flex; align-items:center; justify-content:center;
+    background:#0b1326; color:#dae2fd; font-family:Inter,system-ui,sans-serif; }
+  a { color:#4cd7f6; }
+</style>
+</head>
+<body>
+  <p>Redirecting to <a id="link" href="pole-management.html">Pole Management</a>&hellip;</p>
+  <script>
+    // Preserve ?token=... (and any other query params) through the redirect
+    var target = 'pole-management.html' + location.search;
+    document.getElementById('link').href = target;
+    location.replace(target);
+  </script>
+</body>
+</html>

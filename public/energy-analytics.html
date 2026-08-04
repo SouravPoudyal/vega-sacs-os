@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VEGA SACS / CITY GOVERNANCE OS - Energy Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#003824",
+                        "surface-container-highest": "#2d3449",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "on-surface": "#dae2fd",
+                        "on-secondary-fixed": "#2a1700",
+                        "outline": "#869397",
+                        "tertiary": "#4edea3",
+                        "tertiary-container": "#1bbd85",
+                        "surface-container": "#171f33",
+                        "surface-tint": "#4cd7f6",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-secondary": "#472a00",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface": "#0b1326",
+                        "secondary-fixed": "#ffddb8",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#003640",
+                        "surface-container-lowest": "#060e20",
+                        "background": "#0b1326",
+                        "surface-container-high": "#222a3d",
+                        "on-secondary-container": "#5b3800",
+                        "surface-bright": "#31394d",
+                        "primary": "#4cd7f6",
+                        "surface-container-low": "#131b2e",
+                        "surface-dim": "#0b1326",
+                        "surface-variant": "#2d3449",
+                        "error": "#ffb4ab",
+                        "on-background": "#dae2fd",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "inverse-primary": "#00687a",
+                        "on-tertiary-container": "#00452e",
+                        "primary-fixed": "#acedff",
+                        "primary-container": "#06b6d4",
+                        "on-primary-fixed": "#001f26",
+                        "secondary-container": "#ee9800",
+                        "secondary": "#ffb95f",
+                        "error-container": "#93000a",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "on-error": "#690005",
+                        "outline-variant": "#3d494c",
+                        "inverse-on-surface": "#283044",
+                        "on-surface-variant": "#bcc9cd",
+                        "on-primary-container": "#00424f",
+                        "on-tertiary-fixed": "#002113",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "inverse-surface": "#dae2fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "stack-lg": "24px",
+                        "top-nav-height": "64px",
+                        "sidebar-width": "240px",
+                        "card-padding": "16px",
+                        "margin-page": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        /* Custom scrollbar for technical feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant');
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.primary');
+        }
+        .chart-grid {
+            stroke: theme('colors.outline-variant');
+            stroke-dasharray: 4;
+            opacity: 0.5;
+        }
+        .glass-panel {
+            background-color: theme('colors.surface-container-highest');
+            border: 1px solid theme('colors.outline-variant');
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .neon-border-focus:focus-within { border-color: theme('colors.primary-container'); box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2); }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col bg-background text-on-background">
+<!-- TopNavBar -->
+<header class="bg-surface-container-high dark:bg-surface-container-high docked full-width top-0 border-b border-outline-variant dark:border-outline-variant flat no shadows fixed left-0 w-full z-50 flex items-center justify-between px-margin-page">
+<div class="flex items-center gap-stack-md">
+<img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBze4A2CRxYkVIEM0V-QeCapzvm671jv48CDD7kWlXbsoAOhVkTno-c4fayfyeel4gnhrzzQWBA9qnDW7ezh6_9wnZOgdzwLahb0nBYkJG72E0Cq4h3VAFAB9agrSXvYImUvpNnSxGBwLSGNGhXOVfWQCYiUB-KBvCI1jy75vOxihF1RsyBz47o75HXGmchYH4-JIVEukdscTmL-CGKpHvi2GrMDoZ6KhkdpARsWXKnr9HZiIbzWXNey_islXJbiuxW3TQ"/>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight truncate hidden lg:block">VEGA SACS OS</span>
+</div>
+<nav class="hidden md:flex items-center gap-stack-lg h-full">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="fleet-overview.html">Fleet Overview</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="pole-management.html">Pole Management</a>
+<a class="text-secondary dark:text-secondary border-b-2 border-secondary pb-1 font-bold font-label-md text-label-md hover:text-secondary dark:hover:text-secondary transition-colors duration-200 h-full flex items-center mt-1" href="energy-analytics.html">Energy Analytics</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="fault-reporting.html">Fault Reporting</a>
+</nav>
+<div class="flex items-center gap-stack-md">
+<div class="hidden lg:flex items-center bg-surface px-3 py-1.5 rounded border border-outline-variant neon-border-focus transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md text-on-surface py-0 px-2 w-48 placeholder-on-surface-variant" placeholder="Search node ID..." type="text"/>
+</div>
+<div class="hidden xl:flex items-center gap-unit bg-secondary-container/10 border border-secondary-container rounded-full px-3 py-1">
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+<span class="font-label-md text-label-md text-secondary-container">ACTION REQUIRED: 3 NODES</span>
+</div>
+<button class="bg-error text-on-error font-label-md text-label-md px-4 py-2 rounded hover:bg-error-container hover:text-on-error-container transition-colors duration-200 border border-transparent hover:border-error flex items-center gap-unit">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<span class="hidden sm:inline">Emergency Override</span>
+</button>
+<div class="flex items-center gap-unit border-l border-outline-variant pl-stack-md ml-stack-sm">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="ml-2 w-8 h-8 rounded bg-surface-variant overflow-hidden border border-outline-variant">
+<img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUAmrtckNdGlZbcsxuKV-QSqvNgOs5dSuNujTtfi8sp8GXJ50BqQdyyOoFzHAa3BAKjluyiDBaiDPhGk5u0ngyHFD5KQYcIV73eq5jyPIPjHx2uHQU4y5Rj_OO4VvCC5baCCTPwjatztv4GPmZ7vU-BGUIc6UXCdbG4HJKFGSwxQMNiufM__faz6UyoY4_H2WH60cbYMvgtWLywG6BVybl6bI2bLaHUR5ECT9PbwqQWvAh8Vm5FgH7WphR7rcrUg-MrUI"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 pt-40">
+<!-- SideNavBar -->
+<aside class="bg-surface-container dark:bg-surface-container fixed left-0 top-40 h-[calc(100vh-160px)] w-sidebar-width border-r border-outline-variant dark:border-outline-variant flat no shadows flex flex-col justify-between py-stack-lg z-40 hidden md:flex">
+<div class="flex flex-col gap-unit">
+<nav class="flex flex-col">
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="automation-rules.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud_download</span>
+                    Automation Rules
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="user-access-management.html">
+<span class="material-symbols-outlined">manage_accounts</span>
+                    User &amp; Access Management
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="integrations.html">
+<span class="material-symbols-outlined">extension</span>
+                    Integrations
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="system-logs.html">
+<span class="material-symbols-outlined">description</span>
+                    System Logs
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="billing-reporting.html">
+<span class="material-symbols-outlined">receipt_long</span>
+                    Billing/Reporting
+                </a>
+</nav>
+</div>
+<div class="flex flex-col px-4 gap-stack-md">
+<button class="w-full bg-primary-container text-on-primary-container font-label-md text-label-md py-2 px-4 rounded border border-transparent hover:border-primary-container hover:bg-transparent hover:text-primary-container transition-all duration-200">
+                + New Pole Node
+            </button>
+<nav class="flex flex-col gap-unit pt-stack-sm border-t border-outline-variant">
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant py-2 border-l-4 border-transparent font-label-md text-label-md hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+                    Help
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant py-2 border-l-4 border-transparent font-label-md text-label-md hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+                    Sign Out
+                </a>
+</nav>
+<div class="flex items-center gap-stack-sm pt-stack-md border-t border-outline-variant mt-2">
+<div class="w-10 h-10 rounded bg-surface-variant overflow-hidden border border-outline-variant shrink-0">
+<img alt="Admin User" class="w-full h-full object-cover" data-alt="A small, stylized profile icon of an admin user." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEAaBe55SHcjhNNKqSFNokGbcvFUVyJq6dHzjKXS2rMs9GF9lrZpwI4VjQ56ElKh_U0mDsuOI1BgJAMsMZlE6Q_iC6DkxfZqu6KPkCwvz-FUm2kw41rhw9yDROOXQhDu6boGFPaZx1IN2-Rx6e9uR2kk7TN71ELds82q9sakE7UmEdizvQXPJAv5AWg9GYstl1KY43VicrT1FuM4Z296y_uXkZT9kin8JWrUobk7_t027TQ9HHdADj6A"/>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="font-label-md text-label-md text-on-surface truncate">Administrator</span>
+<span class="font-body-md text-[12px] text-on-surface-variant truncate">Super User</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-sidebar-width p-margin-page overflow-x-hidden bg-background">
+<header class="mb-stack-lg flex items-end justify-between">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight mb-2">Energy Analytics Center</h2>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        Real-time city grid telemetry active. Last sync: <span class="font-label-md text-label-md text-primary">00:00:04 ago</span>
+</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface-container-high border border-outline-variant px-4 py-2 rounded flex items-center gap-2 font-label-md text-label-md text-on-surface hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                        LAST 7 DAYS
+                    </button>
+<button class="bg-primary/10 border border-primary px-4 py-2 rounded flex items-center gap-2 font-label-md text-label-md text-primary font-bold hover:bg-primary hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        EXPORT REPORT
+                    </button>
+</div>
+</header>
+<!-- Top KPI Row (City KPI Strip) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-stack-lg">
+<div class="glass-panel rounded-lg p-card-padding flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Total Energy Saved</h3>
+<span class="material-symbols-outlined text-tertiary text-[20px]">bolt</span>
+</div>
+<div class="flex items-end gap-3">
+<span class="font-display-lg text-display-lg text-on-surface font-bold">24.8<span class="text-headline-md font-normal text-on-surface-variant ml-1">%</span></span>
+<div class="flex items-center text-tertiary bg-tertiary/10 px-2 py-0.5 rounded mb-2 border border-tertiary/20">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span class="font-label-sm text-[10px] ml-1">+3.2%</span>
+</div>
+</div>
+</div>
+<div class="glass-panel rounded-lg p-card-padding flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Total Water Saved</h3>
+<span class="material-symbols-outlined text-primary text-[20px]">water_drop</span>
+</div>
+<div class="flex items-end gap-3">
+<span class="font-display-lg text-display-lg text-on-surface font-bold">12.4<span class="text-headline-md font-normal text-on-surface-variant ml-1">%</span></span>
+<div class="flex items-center text-tertiary bg-tertiary/10 px-2 py-0.5 rounded mb-2 border border-tertiary/20">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span class="font-label-sm text-[10px] ml-1">+1.1%</span>
+</div>
+</div>
+</div>
+<div class="glass-panel rounded-lg p-card-padding flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-secondary to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Solar Gen. Today</h3>
+<span class="material-symbols-outlined text-secondary text-[20px]">solar_power</span>
+</div>
+<div class="flex items-end gap-3">
+<span class="font-display-lg text-display-lg text-on-surface font-bold">842<span class="text-headline-md font-normal text-on-surface-variant ml-1">kWh</span></span>
+<div class="flex items-center text-secondary bg-secondary/10 px-2 py-0.5 rounded mb-2 border border-secondary/20">
+<span class="material-symbols-outlined text-[14px]">trending_flat</span>
+<span class="font-label-sm text-[10px] ml-1">Avg</span>
+</div>
+</div>
+</div>
+<div class="glass-panel rounded-lg p-card-padding flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-tertiary to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Grid Dep. Reduction</h3>
+<span class="material-symbols-outlined text-tertiary text-[20px]">power</span>
+</div>
+<div class="flex items-end gap-3">
+<span class="font-display-lg text-display-lg text-on-surface font-bold">41.2<span class="text-headline-md font-normal text-on-surface-variant ml-1">%</span></span>
+<div class="flex items-center text-tertiary bg-tertiary/10 px-2 py-0.5 rounded mb-2 border border-tertiary/20">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span class="font-label-sm text-[10px] ml-1">+8.4%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- 7-Day Trend Chart -->
+<div class="col-span-12 lg:col-span-8 glass-panel rounded-lg p-card-padding flex flex-col relative">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="font-label-md text-label-md font-bold text-on-surface uppercase tracking-wider">7-Day Energy Consumption Trends</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Multi-series telemetry overlay (kWh)</p>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded bg-primary/50 border border-primary"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Full Pole Base</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded bg-secondary/50 border border-secondary"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Weather Node</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded bg-tertiary/50 border border-tertiary"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Solar + Fogging</span>
+</div>
+</div>
+</div>
+<div class="flex-1 relative min-h-[300px]">
+<!-- Chart Mockup -->
+<div class="absolute inset-0 flex flex-col justify-between text-on-surface-variant font-label-sm text-[10px] pb-6 pr-2">
+<div class="flex justify-between w-full h-[1px] bg-outline-variant/30"><span class="-translate-y-1/2 -translate-x-full pr-2">800</span></div>
+<div class="flex justify-between w-full h-[1px] bg-outline-variant/30"><span class="-translate-y-1/2 -translate-x-full pr-2">600</span></div>
+<div class="flex justify-between w-full h-[1px] bg-outline-variant/30"><span class="-translate-y-1/2 -translate-x-full pr-2">400</span></div>
+<div class="flex justify-between w-full h-[1px] bg-outline-variant/30"><span class="-translate-y-1/2 -translate-x-full pr-2">200</span></div>
+<div class="flex justify-between w-full h-[1px] bg-outline-variant/50"><span class="-translate-y-1/2 -translate-x-full pr-2">0</span></div>
+</div>
+<div class="absolute inset-0 ml-8 pb-6 h-full flex items-end">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<!-- Area Fills -->
+<path d="M0,100 L0,70 Q10,65 20,75 T40,60 T60,80 T80,50 T100,65 L100,100 Z" fill="rgba(76,215,246,0.1)"></path>
+<path d="M0,100 L0,90 Q15,85 30,92 T60,88 T90,95 L100,90 L100,100 Z" fill="rgba(255,185,95,0.1)"></path>
+<!-- Lines -->
+<path d="M0,70 Q10,65 20,75 T40,60 T60,80 T80,50 T100,65" fill="none" stroke="#4cd7f6" stroke-width="2"></path>
+<path d="M0,90 Q15,85 30,92 T60,88 T90,95 L100,90" fill="none" stroke="#ffb95f" stroke-width="2"></path>
+<path d="M0,40 Q20,30 40,45 T70,20 T100,35" fill="none" stroke="#4edea3" stroke-width="2"></path>
+<!-- Data points -->
+<circle cx="40" cy="60" fill="#0b1326" r="2" stroke="#4cd7f6" stroke-width="1.5"></circle>
+<circle cx="80" cy="50" fill="#0b1326" r="2" stroke="#4cd7f6" stroke-width="1.5"></circle>
+<circle cx="70" cy="20" fill="#0b1326" r="2" stroke="#4edea3" stroke-width="1.5"></circle>
+</svg>
+</div>
+<!-- X Axis Labels -->
+<div class="absolute bottom-0 left-8 right-0 flex justify-between font-label-sm text-[10px] text-on-surface-variant pt-2">
+<span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+</div>
+</div>
+</div>
+<!-- Predictive Maintenance Panel -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-gutter">
+<div class="glass-panel rounded-lg p-card-padding flex-1">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-secondary text-[20px]">warning</span>
+<h3 class="font-label-md text-label-md font-bold text-on-surface uppercase tracking-wider">Predictive Anomalies</h3>
+</div>
+<div class="space-y-3">
+<div class="border border-secondary/30 bg-secondary/5 rounded p-3 flex flex-col gap-2 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md text-secondary font-bold">Node P-442 / Sector 7</h4>
+<span class="font-label-sm text-[10px] text-secondary bg-secondary/20 px-1.5 py-0.5 rounded border border-secondary/30">HIGH RISK</span>
+</div>
+<p class="font-body-md text-[12px] text-on-surface-variant leading-tight">Sustained ambient temperature (+4.2°C anomaly) correlating with 15% increased compressor draw.</p>
+<div class="flex justify-between items-end mt-1">
+<div class="flex gap-3">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">thermostat</span><span class="font-label-sm text-on-surface text-[10px]">42.5°C</span></div>
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">bolt</span><span class="font-label-sm text-on-surface text-[10px]">1.8kW</span></div>
+</div>
+<button class="font-label-sm text-[10px] text-secondary hover:text-white transition-colors underline">INVESTIGATE</button>
+</div>
+</div>
+<div class="border border-secondary/30 bg-secondary/5 rounded p-3 flex flex-col gap-2 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md text-secondary font-bold">Node P-109 / Sector 2</h4>
+<span class="font-label-sm text-[10px] text-secondary bg-secondary/20 px-1.5 py-0.5 rounded border border-secondary/30">MODERATE</span>
+</div>
+<p class="font-body-md text-[12px] text-on-surface-variant leading-tight">Intermittent solar inverter faults causing grid fallback during peak sunlight hours.</p>
+<div class="flex justify-between items-end mt-1">
+<div class="flex gap-3">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">solar_power</span><span class="font-label-sm text-on-surface text-[10px]">0W gen</span></div>
+</div>
+<button class="font-label-sm text-[10px] text-secondary hover:text-white transition-colors underline">DISPATCH</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Ranked List: Pole Energy Draw -->
+<div class="col-span-12 lg:col-span-6 glass-panel rounded-lg p-card-padding">
+<h3 class="font-label-md text-label-md font-bold text-on-surface uppercase tracking-wider mb-4 border-b border-outline-variant pb-2">Highest Energy Draw (kW) - Realtime</h3>
+<div class="space-y-4">
+<!-- Bar Item -->
+<div>
+<div class="flex justify-between text-label-md font-label-md mb-1.5">
+<span class="text-on-surface font-bold">P-882 [Industrial Park]</span>
+<span class="text-primary font-bold">4.2 kW</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 85%"></div>
+</div>
+</div>
+<!-- Bar Item -->
+<div>
+<div class="flex justify-between text-label-md font-label-md mb-1.5">
+<span class="text-on-surface font-bold">P-104 [Transit Hub A]</span>
+<span class="text-primary font-bold">3.8 kW</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 75%"></div>
+</div>
+</div>
+<!-- Bar Item -->
+<div>
+<div class="flex justify-between text-label-md font-label-md mb-1.5">
+<span class="text-on-surface font-bold">P-442 [Commercial Dist.]</span>
+<span class="text-secondary font-bold">3.1 kW</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary" style="width: 60%"></div>
+</div>
+<p class="font-label-sm text-[9px] text-secondary mt-1 tracking-wider uppercase">Anomaly Flagged</p>
+</div>
+<!-- Bar Item -->
+<div>
+<div class="flex justify-between text-label-md font-label-md mb-1.5">
+<span class="text-on-surface font-bold">P-291 [Central Plaza]</span>
+<span class="text-primary/70 font-bold">2.4 kW</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary/70" style="width: 45%"></div>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-2 border border-outline-variant rounded font-label-sm text-label-sm text-on-surface-variant hover:text-primary hover:border-primary transition-colors uppercase tracking-widest">View Full Fleet Ranking</button>
+</div>
+<!-- Solar Performance vs Consumption -->
+<div class="col-span-12 lg:col-span-6 glass-panel rounded-lg p-card-padding">
+<h3 class="font-label-md text-label-md font-bold text-on-surface uppercase tracking-wider mb-4 border-b border-outline-variant pb-2">Solar Fleet Net Position</h3>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-surface-container-low border border-outline-variant/50 p-3 rounded">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase block mb-1">Total Generation (Active)</span>
+<span class="font-headline-lg text-headline-lg text-tertiary">142<span class="text-label-md ml-1">kW</span></span>
+</div>
+<div class="bg-surface-container-low border border-outline-variant/50 p-3 rounded">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase block mb-1">Fleet Consumption</span>
+<span class="font-headline-lg text-headline-lg text-error">98<span class="text-label-md ml-1">kW</span></span>
+</div>
+</div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-md text-label-md text-on-surface">Net Grid Contribution</span>
+<span class="font-label-md text-label-md text-tertiary font-bold">+44 kW</span>
+</div>
+<div class="w-full h-3 flex rounded-sm overflow-hidden border border-outline-variant">
+<div class="h-full bg-tertiary relative" style="width: 59%">
+<div class="absolute right-0 top-0 bottom-0 w-[1px] bg-white"></div>
+</div>
+<div class="h-full bg-surface-container-highest" style="width: 41%"></div>
+</div>
+<div class="flex justify-between mt-2 font-label-sm text-[10px] text-on-surface-variant">
+<span>100% Self-Sustaining</span>
+<span>Surplus Exported</span>
+</div>
+<div class="mt-6 flex items-center gap-3 p-3 bg-surface-container-highest/50 border border-outline-variant/30 rounded">
+<span class="material-symbols-outlined text-tertiary">wb_sunny</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Optimal conditions detected.</p>
+<p class="font-body-md text-[12px] text-on-surface-variant">Expected surplus peak at 14:00 local time.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

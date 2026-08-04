@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VEGA SACS OS - Fault Reporting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#06b6d4",
+                        "outline": "#869397",
+                        "on-secondary": "#472a00",
+                        "on-surface-variant": "#bcc9cd",
+                        "primary": "#4cd7f6",
+                        "surface-container-low": "#131b2e",
+                        "secondary-fixed": "#ffddb8",
+                        "surface-variant": "#2d3449",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "on-primary-container": "#00424f",
+                        "surface-tint": "#4cd7f6",
+                        "on-primary": "#003640",
+                        "surface-container": "#171f33",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-tertiary": "#003824",
+                        "inverse-primary": "#00687a",
+                        "tertiary-container": "#1bbd85",
+                        "primary-fixed": "#acedff",
+                        "surface-container-high": "#222a3d",
+                        "tertiary-fixed": "#6ffbbe",
+                        "surface-dim": "#0b1326",
+                        "on-surface": "#dae2fd",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-secondary-fixed": "#2a1700",
+                        "surface-container-highest": "#2d3449",
+                        "background": "#0b1326",
+                        "on-tertiary-fixed": "#002113",
+                        "inverse-surface": "#dae2fd",
+                        "surface-bright": "#31394d",
+                        "on-secondary-container": "#5b3800",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "tertiary": "#4edea3",
+                        "on-primary-fixed": "#001f26",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#00452e",
+                        "outline-variant": "#3d494c",
+                        "surface": "#0b1326",
+                        "secondary": "#ffb95f",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "secondary-container": "#ee9800",
+                        "inverse-on-surface": "#283044",
+                        "on-background": "#dae2fd",
+                        "error-container": "#93000a",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "unit": "4px",
+                        "stack-md": "16px",
+                        "top-nav-height": "64px",
+                        "margin-page": "24px",
+                        "stack-sm": "8px",
+                        "stack-lg": "24px",
+                        "sidebar-width": "240px",
+                        "card-padding": "16px",
+                        "gutter": "16px"
+                    },
+                    fontFamily: {
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"]
+                    },
+                    fontSize: {
+                        "headline-lg-mobile": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+                        "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.08em", fontWeight: "500" }],
+                        "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-md": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+                        "headline-xl": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "500" }],
+                        "headline-lg": ["24px", { lineHeight: "32px", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        .glass-panel {
+            background-color: theme('colors.surface-container-highest');
+            border: 1px solid theme('colors.outline-variant');
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .neon-border-focus:focus-within { border-color: theme('colors.primary-container'); box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2); }
+        .inner-stroke { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }
+        .pulse-critical { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(255, 180, 171, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(255, 180, 171, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 180, 171, 0); } }
+    </style>
+</head>
+<body class="font-body-md bg-surface antialiased text-on-surface overflow-hidden h-screen w-screen flex flex-col text-body-md">
+<!-- TopNav -->
+<header class="bg-surface-container-high dark:bg-surface-container-high docked full-width top-0 border-b border-outline-variant dark:border-outline-variant flat no shadows fixed left-0 w-full z-50 flex items-center justify-between px-margin-page">
+<div class="flex items-center gap-stack-md">
+<img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBze4A2CRxYkVIEM0V-QeCapzvm671jv48CDD7kWlXbsoAOhVkTno-c4fayfyeel4gnhrzzQWBA9qnDW7ezh6_9wnZOgdzwLahb0nBYkJG72E0Cq4h3VAFAB9agrSXvYImUvpNnSxGBwLSGNGhXOVfWQCYiUB-KBvCI1jy75vOxihF1RsyBz47o75HXGmchYH4-JIVEukdscTmL-CGKpHvi2GrMDoZ6KhkdpARsWXKnr9HZiIbzWXNey_islXJbiuxW3TQ"/>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight truncate hidden lg:block">VEGA SACS OS</span>
+</div>
+<nav class="hidden md:flex items-center gap-stack-lg h-full">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="fleet-overview.html">Fleet Overview</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="pole-management.html">Pole Management</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="energy-analytics.html">Energy Analytics</a>
+<a class="text-secondary dark:text-secondary border-b-2 border-secondary pb-1 font-bold font-label-md text-label-md hover:text-secondary dark:hover:text-secondary transition-colors duration-200 h-full flex items-center mt-1" href="fault-reporting.html">Fault Reporting</a>
+</nav>
+<div class="flex items-center gap-stack-md">
+<div class="hidden lg:flex items-center bg-surface px-3 py-1.5 rounded border border-outline-variant neon-border-focus transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md text-on-surface py-0 px-2 w-48 placeholder-on-surface-variant" placeholder="Search node ID..." type="text"/>
+</div>
+<div class="hidden xl:flex items-center gap-unit bg-secondary-container/10 border border-secondary-container rounded-full px-3 py-1">
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+<span class="font-label-md text-label-md text-secondary-container">ACTION REQUIRED: 4 NODES</span>
+</div>
+<button class="bg-error text-on-error font-label-md text-label-md px-4 py-2 rounded hover:bg-error-container hover:text-on-error-container transition-colors duration-200 border border-transparent hover:border-error flex items-center gap-unit">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<span class="hidden sm:inline">Emergency Override</span>
+</button>
+<div class="flex items-center gap-unit border-l border-outline-variant pl-stack-md ml-stack-sm">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="ml-2 w-8 h-8 rounded bg-surface-variant overflow-hidden border border-outline-variant">
+<img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUAmrtckNdGlZbcsxuKV-QSqvNgOs5dSuNujTtfi8sp8GXJ50BqQdyyOoFzHAa3BAKjluyiDBaiDPhGk5u0ngyHFD5KQYcIV73eq5jyPIPjHx2uHQU4y5Rj_OO4VvCC5baCCTPwjatztv4GPmZ7vU-BGUIc6UXCdbG4HJKFGSwxQMNiufM__faz6UyoY4_H2WH60cbYMvgtWLywG6BVybl6bI2bLaHUR5ECT9PbwqQWvAh8Vm5FgH7WphR7rcrUg-MrUI"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 pt-40 overflow-hidden h-full">
+<!-- SideNav -->
+<aside class="bg-surface-container border-r border-outline-variant w-sidebar-width h-full flex flex-col justify-between py-stack-lg shrink-0">
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-stack-md text-on-surface-variant px-4 py-3 border-l-4 border-transparent hover:bg-surface-variant hover:text-on-surface transition-all font-label-md text-label-md" href="automation-rules.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud_download</span> Automation Rules
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant px-4 py-3 border-l-4 border-transparent hover:bg-surface-variant hover:text-on-surface transition-all font-label-md text-label-md" href="user-access-management.html">
+<span class="material-symbols-outlined">manage_accounts</span> User &amp; Access Management
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant px-4 py-3 border-l-4 border-transparent hover:bg-surface-variant hover:text-on-surface transition-all font-label-md text-label-md" href="integrations.html">
+<span class="material-symbols-outlined">extension</span> Integrations
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant px-4 py-3 border-l-4 border-transparent hover:bg-surface-variant hover:text-on-surface transition-all font-label-md text-label-md" href="system-logs.html">
+<span class="material-symbols-outlined">description</span> System Logs
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant px-4 py-3 border-l-4 border-transparent hover:bg-surface-variant hover:text-on-surface transition-all font-label-md text-label-md" href="billing-reporting.html">
+<span class="material-symbols-outlined">receipt_long</span> Billing/Reporting
+                </a>
+</nav>
+<div class="px-4 flex flex-col gap-4">
+<button class="w-full bg-primary-container text-on-primary-container font-label-md text-label-md py-2 px-4 rounded border border-transparent hover:border-primary-container hover:bg-transparent hover:text-primary-container transition-all duration-200">
+                + New Pole Node
+            </button>
+<div class="border-t border-outline-variant pt-4 flex flex-col gap-1">
+<a class="flex items-center gap-stack-md text-on-surface-variant px-3 py-2 hover:text-on-surface transition-all font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span> Help
+                    </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant px-3 py-2 hover:text-on-surface transition-all font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span> Sign Out
+                    </a>
+</div>
+<div class="flex items-center gap-3 mt-2 bg-surface-container-lowest p-3 rounded border border-outline-variant/50">
+<div class="w-10 h-10 rounded bg-surface border border-outline-variant overflow-hidden shrink-0">
+<img alt="Admin User" class="w-full h-full object-cover" data-alt="A small, stylized profile icon of an admin user." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEAaBe55SHcjhNNKqSFNokGbcvFUVyJq6dHzjKXS2rMs9GF9lrZpwI4VjQ56ElKh_U0mDsuOI1BgJAMsMZlE6Q_iC6DkxfZqu6KPkCwvz-FUm2kw41rhw9yDROOXQhDu6boGFPaZx1IN2-Rx6e9uR2kk7TN71ELds82q9sakE7UmEdizvQXPJAv5AWg9GYstl1KY43VicrT1FuM4Z296y_uXkZT9kin8JWrUobk7_t027TQ9HHdADj6A"/>
+</div>
+<div class="overflow-hidden">
+<div class="font-label-md text-on-surface truncate text-label-md">Administrator</div>
+<div class="font-label-sm text-primary truncate text-label-sm">Super User</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto p-margin-page bg-background">
+<div class="max-w-7xl mx-auto space-y-stack-lg">
+<!-- KPI Summary Strip -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Critical -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-error"></div>
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider text-label-sm">Critical Faults</span>
+<span class="material-symbols-outlined text-error text-lg">warning</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-error text-display-lg">4</span>
+<span class="font-label-md text-on-surface-variant text-label-md">Active</span>
+</div>
+</div>
+<!-- Warnings -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-secondary"></div>
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider text-label-sm">Warnings</span>
+<span class="material-symbols-outlined text-secondary text-lg">error_outline</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-secondary text-display-lg">12</span>
+<span class="font-label-md text-on-surface-variant text-label-md">Active</span>
+</div>
+</div>
+<!-- Offline -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-outline"></div>
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider text-label-sm">Offline Nodes</span>
+<span class="material-symbols-outlined text-outline text-lg">wifi_off</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-on-surface text-display-lg">3</span>
+<span class="font-label-md text-on-surface-variant text-label-md">Last 24h</span>
+</div>
+</div>
+<!-- Resolved -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-tertiary"></div>
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider text-label-sm">Resolved This Week</span>
+<span class="material-symbols-outlined text-tertiary text-lg">check_circle</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-tertiary text-display-lg">87</span>
+<span class="font-label-md text-on-surface-variant text-label-md">Total</span>
+</div>
+</div>
+</div>
+<!-- Main Bento Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter h-[calc(100vh-280px)] min-h-[500px]">
+<!-- Fault List & Filters (Spans 2 columns) -->
+<div class="lg:col-span-2 glass-panel rounded-lg flex flex-col overflow-hidden">
+<div class="p-4 border-b border-outline-variant bg-surface-container flex justify-between items-center">
+<h2 class="font-headline-md text-on-surface text-headline-md">Active Faults</h2>
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-surface border border-primary text-primary rounded-full font-label-sm text-label-sm">All</button>
+<button class="px-3 py-1 bg-surface border border-outline-variant text-on-surface-variant rounded-full font-label-sm hover:border-error hover:text-error transition-colors text-label-sm">Critical</button>
+<button class="px-3 py-1 bg-surface border border-outline-variant text-on-surface-variant rounded-full font-label-sm hover:border-secondary hover:text-secondary transition-colors text-label-sm">Warning</button>
+<button class="px-3 py-1 bg-surface border border-outline-variant text-on-surface-variant rounded-full font-label-sm hover:border-outline hover:text-outline transition-colors text-label-sm">Offline</button>
+<button class="px-3 py-1 bg-surface border border-outline-variant text-on-surface-variant rounded-full font-label-sm hover:border-tertiary hover:text-tertiary transition-colors text-label-sm">Resolved</button>
+</div>
+</div>
+<div class="overflow-y-auto flex-1">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-highest/50 font-label-sm text-on-surface-variant sticky top-0 backdrop-blur-md text-label-sm">
+<tr>
+<th class="p-4 font-medium w-10"></th>
+<th class="p-4 font-medium">Pole / Location</th>
+<th class="p-4 font-medium">Issue</th>
+<th class="p-4 font-medium">Code</th>
+<th class="p-4 font-medium">Time</th>
+<th class="p-4 font-medium text-right">Status</th>
+</tr>
+</thead>
+<tbody class="font-body-md divide-y divide-outline-variant/30 text-body-md">
+<!-- Selected Row (Critical) -->
+<tr class="bg-primary/5 cursor-pointer hover:bg-surface-variant transition-colors group">
+<td class="p-4"><div class="w-2.5 h-2.5 rounded-full bg-error pulse-critical"></div></td>
+<td class="p-4">
+<div class="font-label-md text-on-surface text-label-md">PN-A42-NORTH</div>
+<div class="text-xs text-on-surface-variant">Sector 4, Main Blvd</div>
+</td>
+<td class="p-4 text-on-surface font-medium">Inverter Overheat</td>
+<td class="p-4 font-label-md text-error text-label-md">ERR-PWR-04</td>
+<td class="p-4 text-sm text-on-surface-variant">10m ago</td>
+<td class="p-4 text-right">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-error/10 text-error font-label-sm border border-error/20 text-label-sm">
+                                                UNACKNOWLEDGED
+                                            </span>
+</td>
+</tr>
+<!-- Warning Row -->
+<tr class="cursor-pointer hover:bg-surface-variant transition-colors group">
+<td class="p-4"><div class="w-2 h-2 rounded-full bg-secondary"></div></td>
+<td class="p-4">
+<div class="font-label-md text-on-surface text-label-md">PN-B12-EAST</div>
+<div class="text-xs text-on-surface-variant">Sector 2, Transit Hub</div>
+</td>
+<td class="p-4 text-on-surface">Sensor Calibration Drift</td>
+<td class="p-4 font-label-md text-secondary text-label-md">WRN-SENS-12</td>
+<td class="p-4 text-sm text-on-surface-variant">1h 22m ago</td>
+<td class="p-4 text-right">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-secondary/10 text-secondary font-label-sm border border-secondary/20 text-label-sm">
+                                                ACKNOWLEDGED
+                                            </span>
+</td>
+</tr>
+<!-- Offline Row -->
+<tr class="cursor-pointer hover:bg-surface-variant transition-colors group">
+<td class="p-4"><div class="w-2 h-2 rounded-full bg-outline"></div></td>
+<td class="p-4">
+<div class="font-label-md text-on-surface text-label-md">PN-C09-WEST</div>
+<div class="text-xs text-on-surface-variant">Sector 7, Industrial</div>
+</td>
+<td class="p-4 text-on-surface">Telemetry Loss</td>
+<td class="p-4 font-label-md text-outline text-label-md">SYS-COM-01</td>
+<td class="p-4 text-sm text-on-surface-variant">4h ago</td>
+<td class="p-4 text-right">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-outline/10 text-outline font-label-sm border border-outline/20 text-label-sm">
+                                                INVESTIGATING
+                                            </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Side Panel: Details & Trend -->
+<div class="flex flex-col gap-gutter">
+<!-- Detail Expansion (Contextual to selected row) -->
+<div class="glass-panel rounded-lg p-card-padding flex-1 flex flex-col border-t-2 border-t-error bg-error/5 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl text-error">warning</span>
+</div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<div class="font-label-sm text-error mb-1 tracking-widest text-label-sm">CRITICAL FAULT</div>
+<h3 class="font-headline-md text-on-surface text-headline-md">PN-A42-NORTH</h3>
+</div>
+<span class="font-label-md bg-surface-container border border-error/30 text-error px-2 py-1 rounded text-label-md">ERR-PWR-04</span>
+</div>
+<div class="space-y-4 flex-1 relative z-10">
+<div>
+<div class="font-label-sm text-on-surface-variant mb-1 text-label-sm">ISSUE DIAGNOSTIC</div>
+<p class="font-body-md text-on-surface bg-surface-container-lowest/50 p-3 rounded border border-outline-variant/30 leading-relaxed text-body-md">
+                                        Main inverter temp exceeded 85°C operational threshold. Thermal throttling engaged. Secondary cooling fan zero RPM detected. Imminent shutdown risk.
+                                    </p>
+</div>
+<div>
+<div class="font-label-sm text-on-surface-variant mb-1 text-label-sm">SUGGESTED ACTION</div>
+<p class="font-body-md text-secondary border-l-2 border-secondary pl-3 py-1 text-body-md">
+                                        Initiate remote soft-reboot of secondary systems. If cooling fails to engage, physical dispatch required to prevent hardware failure.
+                                    </p>
+</div>
+</div>
+<div class="mt-4 flex gap-3 relative z-10">
+<button class="flex-1 bg-surface-variant border border-outline-variant text-on-surface py-2 rounded font-label-md hover:bg-surface-container transition-colors inner-stroke text-label-md">
+                                    Acknowledge
+                                </button>
+<button class="flex-1 bg-primary text-on-primary py-2 rounded font-label-md hover:bg-primary/90 transition-colors inner-stroke font-bold flex items-center justify-center gap-2 text-label-md">
+<span class="material-symbols-outlined text-sm">engineering</span> Dispatch Technician
+                                </button>
+</div>
+</div>
+<!-- 30-Day Trend Chart Area (Placeholder for actual chart) -->
+<div class="glass-panel rounded-lg p-card-padding h-48 flex flex-col">
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-label-sm text-on-surface-variant tracking-wider uppercase text-label-sm">30-Day Fault Trend</h3>
+<span class="font-label-sm text-secondary text-label-sm">↑ 12% vs Prev</span>
+</div>
+<div class="flex-1 relative w-full border-b border-l border-outline-variant/50 mt-2">
+<!-- Synthetic Chart Representation via CSS -->
+<div class="absolute bottom-0 left-0 w-full h-[60%] bg-gradient-to-t from-primary/20 to-transparent flex items-end">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,80 Q10,70 20,85 T40,60 T60,75 T80,40 T100,50 L100,100 L0,100 Z" fill="rgba(76, 215, 246, 0.1)" stroke="#4cd7f6" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<div class="flex justify-between mt-2 font-label-sm text-outline text-label-sm">
+<span>-30d</span>
+<span>Today</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

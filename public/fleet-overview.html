@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VEGA SACS / CITY GOVERNANCE OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#5b3800",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-bright": "#31394d",
+                        "background": "#0b1326",
+                        "on-secondary-fixed": "#2a1700",
+                        "on-primary-fixed": "#001f26",
+                        "error": "#ffb4ab",
+                        "on-surface": "#dae2fd",
+                        "inverse-primary": "#00687a",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "secondary-container": "#ee9800",
+                        "error-container": "#93000a",
+                        "primary-container": "#06b6d4",
+                        "surface": "#0b1326",
+                        "surface-container-lowest": "#060e20",
+                        "surface-container-low": "#131b2e",
+                        "on-tertiary-fixed": "#002113",
+                        "on-error": "#690005",
+                        "primary": "#4cd7f6",
+                        "tertiary": "#4edea3",
+                        "on-tertiary": "#003824",
+                        "surface-container-high": "#222a3d",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "outline": "#869397",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "surface-container": "#171f33",
+                        "surface-tint": "#4cd7f6",
+                        "secondary-fixed": "#ffddb8",
+                        "on-secondary": "#472a00",
+                        "on-surface-variant": "#bcc9cd",
+                        "surface-container-highest": "#2d3449",
+                        "surface-variant": "#2d3449",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-tertiary-container": "#00452e",
+                        "primary-fixed": "#acedff",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#283044",
+                        "secondary": "#ffb95f",
+                        "on-primary-container": "#00424f",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "on-primary": "#003640",
+                        "on-background": "#dae2fd",
+                        "inverse-surface": "#dae2fd",
+                        "tertiary-fixed": "#6ffbbe",
+                        "tertiary-container": "#1bbd85",
+                        "surface-dim": "#0b1326",
+                        "outline-variant": "#3d494c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "card-padding": "16px",
+                        "stack-lg": "24px",
+                        "stack-md": "16px",
+                        "unit": "4px",
+                        "stack-sm": "8px",
+                        "margin-page": "24px",
+                        "sidebar-width": "240px",
+                        "gutter": "16px",
+                        "top-nav-height": "64px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }
+        .neon-border-focus:focus-within { border-color: theme('colors.primary-container'); box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2); }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-hidden bg-background text-on-background">
+<!-- Top Navigation Bar -->
+<header class="bg-surface-container-high dark:bg-surface-container-high docked full-width top-0 border-b border-outline-variant dark:border-outline-variant flat no shadows fixed left-0 w-full z-50 flex items-center justify-between px-margin-page">
+<!-- Brand & Logo -->
+<div class="flex items-center gap-stack-md">
+<img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBze4A2CRxYkVIEM0V-QeCapzvm671jv48CDD7kWlXbsoAOhVkTno-c4fayfyeel4gnhrzzQWBA9qnDW7ezh6_9wnZOgdzwLahb0nBYkJG72E0Cq4h3VAFAB9agrSXvYImUvpNnSxGBwLSGNGhXOVfWQCYiUB-KBvCI1jy75vOxihF1RsyBz47o75HXGmchYH4-JIVEukdscTmL-CGKpHvi2GrMDoZ6KhkdpARsWXKnr9HZiIbzWXNey_islXJbiuxW3TQ"/>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight truncate hidden lg:block">VEGA SACS OS</span>
+</div>
+<!-- Navigation Links (Center) -->
+<nav class="hidden md:flex items-center gap-stack-lg h-full">
+<a class="text-secondary dark:text-secondary border-b-2 border-secondary pb-1 font-bold font-label-md text-label-md hover:text-secondary dark:hover:text-secondary transition-colors duration-200 h-full flex items-center mt-1" href="fleet-overview.html">Fleet Overview</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="pole-management.html">Pole Management</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="energy-analytics.html">Energy Analytics</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="fault-reporting.html">Fault Reporting</a>
+</nav>
+<!-- Right Actions -->
+<div class="flex items-center gap-stack-md">
+<!-- Search -->
+<div class="hidden lg:flex items-center bg-surface px-3 py-1.5 rounded border border-outline-variant neon-border-focus transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md text-on-surface py-0 px-2 w-48 placeholder-on-surface-variant" placeholder="Search node ID..." type="text"/>
+</div>
+<!-- Action Pill -->
+<div class="hidden xl:flex items-center gap-unit bg-secondary-container/10 border border-secondary-container rounded-full px-3 py-1">
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+<span class="font-label-md text-label-md text-secondary-container">ACTION REQUIRED: 5 NODES</span>
+</div>
+<!-- Emergency Button -->
+<button class="bg-error text-on-error font-label-md text-label-md px-4 py-2 rounded hover:bg-error-container hover:text-on-error-container transition-colors duration-200 border border-transparent hover:border-error flex items-center gap-unit">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<span class="hidden sm:inline">Emergency Override</span>
+</button>
+<!-- Icons -->
+<div class="flex items-center gap-unit border-l border-outline-variant pl-stack-md ml-stack-sm">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="ml-2 w-8 h-8 rounded bg-surface-variant overflow-hidden border border-outline-variant">
+<img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUAmrtckNdGlZbcsxuKV-QSqvNgOs5dSuNujTtfi8sp8GXJ50BqQdyyOoFzHAa3BAKjluyiDBaiDPhGk5u0ngyHFD5KQYcIV73eq5jyPIPjHx2uHQU4y5Rj_OO4VvCC5baCCTPwjatztv4GPmZ7vU-BGUIc6UXCdbG4HJKFGSwxQMNiufM__faz6UyoY4_H2WH60cbYMvgtWLywG6BVybl6bI2bLaHUR5ECT9PbwqQWvAh8Vm5FgH7WphR7rcrUg-MrUI"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Side Navigation Bar -->
+<aside class="bg-surface-container dark:bg-surface-container fixed left-0 top-40 h-[calc(100vh-160px)] w-sidebar-width border-r border-outline-variant dark:border-outline-variant flat no shadows flex flex-col justify-between py-stack-lg z-40 hidden md:flex">
+<div class="flex flex-col gap-unit">
+<!-- Tabs -->
+<nav class="flex flex-col">
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="automation-rules.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud_download</span>
+                    Automation Rules
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="user-access-management.html">
+<span class="material-symbols-outlined">manage_accounts</span>
+                    User &amp; Access Management
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="integrations.html">
+<span class="material-symbols-outlined">extension</span>
+                    Integrations
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="system-logs.html">
+<span class="material-symbols-outlined">description</span>
+                    System Logs
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent font-label-md text-label-md hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all" href="billing-reporting.html">
+<span class="material-symbols-outlined">receipt_long</span>
+                    Billing/Reporting
+                </a>
+</nav>
+</div>
+<div class="flex flex-col px-4 gap-stack-md">
+<button class="w-full bg-primary-container text-on-primary-container font-label-md text-label-md py-2 px-4 rounded border border-transparent hover:border-primary-container hover:bg-transparent hover:text-primary-container transition-all duration-200">
+                + New Pole Node
+            </button>
+<nav class="flex flex-col gap-unit pt-stack-sm border-t border-outline-variant">
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant py-2 border-l-4 border-transparent font-label-md text-label-md hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+                    Help
+                </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant py-2 border-l-4 border-transparent font-label-md text-label-md hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+                    Sign Out
+                </a>
+</nav>
+<div class="flex items-center gap-stack-sm pt-stack-md border-t border-outline-variant mt-2">
+<div class="w-10 h-10 rounded bg-surface-variant overflow-hidden border border-outline-variant shrink-0">
+<img alt="Admin User" class="w-full h-full object-cover" data-alt="A small, stylized profile icon of an admin user." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEAaBe55SHcjhNNKqSFNokGbcvFUVyJq6dHzjKXS2rMs9GF9lrZpwI4VjQ56ElKh_U0mDsuOI1BgJAMsMZlE6Q_iC6DkxfZqu6KPkCwvz-FUm2kw41rhw9yDROOXQhDu6boGFPaZx1IN2-Rx6e9uR2kk7TN71ELds82q9sakE7UmEdizvQXPJAv5AWg9GYstl1KY43VicrT1FuM4Z296y_uXkZT9kin8JWrUobk7_t027TQ9HHdADj6A"/>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="font-label-md text-label-md text-on-surface truncate">Administrator</span>
+<span class="font-body-md text-[12px] text-on-surface-variant truncate">Super User</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="md:pl-sidebar-width h-screen w-full flex flex-col bg-background overflow-y-auto pt-40">
+<div class="p-margin-page flex-1 flex flex-col gap-gutter max-w-[1920px] mx-auto w-full">
+<!-- 1. City KPI Strip -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter h-auto shrink-0">
+<div class="glass-panel p-card-padding rounded-lg border border-outline-variant flex flex-col justify-center relative overflow-hidden group">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Poles Online</span>
+<div class="flex items-end gap-2">
+<span class="font-headline-xl text-on-surface">1,204</span>
+<span class="font-label-md text-tertiary mb-1">/ 1,250</span>
+</div>
+</div>
+<div class="glass-panel p-card-padding rounded-lg border border-outline-variant flex flex-col justify-center relative overflow-hidden group">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Estimated Energy Saved (%)</span>
+<div class="flex items-end gap-2">
+<span class="font-headline-xl text-on-surface">34.2%</span>
+<span class="material-symbols-outlined text-tertiary mb-1">trending_up</span>
+</div>
+</div>
+<div class="glass-panel p-card-padding rounded-lg border border-outline-variant flex flex-col justify-center relative overflow-hidden group">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Water Saved via Irrigation (%)</span>
+<div class="flex items-end gap-2">
+<span class="font-headline-xl text-on-surface">18.5%</span>
+<span class="material-symbols-outlined text-tertiary mb-1">water_drop</span>
+</div>
+</div>
+<div class="glass-panel p-card-padding rounded-lg border border-outline-variant flex flex-col justify-center relative overflow-hidden group">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Active Faults</span>
+<div class="flex items-end gap-2">
+<span class="font-headline-xl text-error">12</span>
+<span class="font-label-md text-error mb-1">Requires Attention</span>
+</div>
+</div>
+</section>
+<!-- Center Layout: Fleet Grid -->
+<section class="flex-1 flex flex-col gap-gutter min-h-[400px]">
+<div class="flex-1 glass-panel rounded-lg border border-outline-variant flex flex-col overflow-hidden">
+<!-- Filter Chips -->
+<div class="p-4 border-b border-outline-variant flex flex-wrap gap-2">
+<button class="px-4 py-1.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md hover:bg-secondary transition-colors">All</button>
+<button class="px-4 py-1.5 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-variant font-label-md transition-colors">Full Pole</button>
+<button class="px-4 py-1.5 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-variant font-label-md transition-colors">Weather Node</button>
+<button class="px-4 py-1.5 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-variant font-label-md transition-colors">Solar + Fogging</button>
+</div>
+<!-- Fleet Grid/Table -->
+<div class="flex-1 overflow-auto">
+<table class="w-full text-left border-collapse whitespace-nowrap">
+<thead class="sticky top-0 bg-surface-container-high z-10 border-b border-outline-variant shadow-sm">
+<tr>
+<th class="p-4 font-label-sm text-on-surface-variant uppercase w-12 text-center">Status</th>
+<th class="p-4 font-label-sm text-on-surface-variant uppercase">Pole Name</th>
+<th class="p-4 font-label-sm text-on-surface-variant uppercase">Location</th>
+<th class="p-4 font-label-sm text-on-surface-variant uppercase">Type</th>
+<th class="p-4 font-label-sm text-on-surface-variant uppercase">Telemetry</th>
+</tr>
+</thead>
+<tbody>
+<!-- Online Pole -->
+<tr class="border-b border-outline-variant/50 hover:bg-surface-variant/50 transition-colors cursor-pointer group">
+<td class="p-4 flex justify-center">
+<div class="w-3 h-3 rounded-full bg-tertiary shadow-[0_0_8px_rgba(78,222,163,0.6)]"></div>
+</td>
+<td class="p-4 font-label-md text-on-surface font-bold group-hover:text-primary transition-colors">POLE-DL-001</td>
+<td class="p-4 font-body-md text-on-surface-variant">Connaught Place</td>
+<td class="p-4">
+<span class="px-2 py-1 rounded bg-primary-container/10 text-primary font-label-sm border border-primary/30">Full Pole</span>
+</td>
+<td class="p-4 font-label-md text-on-surface-variant flex gap-4 items-center">
+<div class="flex items-center gap-1" title="Temperature"><span class="material-symbols-outlined text-[16px] text-tertiary">device_thermostat</span> 28 °C</div>
+<div class="flex items-center gap-1" title="Humidity"><span class="material-symbols-outlined text-[16px] text-primary">humidity_mid</span> 65 %</div>
+<div class="flex items-center gap-1" title="Air Quality"><span class="material-symbols-outlined text-[16px] text-secondary">air</span> 42 AQI</div>
+<div class="flex items-center gap-1" title="Power Draw"><span class="material-symbols-outlined text-[16px] text-on-surface-variant">bolt</span> 120 W</div>
+<div class="flex items-center gap-1" title="Illuminance"><span class="material-symbols-outlined text-[16px] text-on-surface-variant">light_mode</span> 850 lux</div>
+</td>
+</tr>
+<!-- Offline/Warning Pole -->
+<tr class="border-b border-outline-variant/50 hover:bg-surface-variant/50 transition-colors cursor-pointer group bg-error/5">
+<td class="p-4 flex justify-center">
+<div class="w-3 h-3 rounded-full bg-error shadow-[0_0_8px_rgba(255,180,171,0.6)] animate-pulse"></div>
+</td>
+<td class="p-4 font-label-md text-on-surface font-bold group-hover:text-primary transition-colors">POLE-DL-042</td>
+<td class="p-4 font-body-md text-on-surface-variant">Connaught Place</td>
+<td class="p-4">
+<span class="px-2 py-1 rounded bg-surface-variant text-on-surface-variant font-label-sm border border-outline-variant">Weather Node</span>
+</td>
+<td class="p-4 font-label-md text-on-surface-variant flex gap-4 items-center">
+<div class="flex items-center gap-1 text-error"><span class="material-symbols-outlined text-[16px]">warning</span> CONNECTION_LOST</div>
+</td>
+</tr>
+<!-- Warning Pole -->
+<tr class="border-b border-outline-variant/50 hover:bg-surface-variant/50 transition-colors cursor-pointer group">
+<td class="p-4 flex justify-center">
+<div class="w-3 h-3 rounded-full bg-secondary shadow-[0_0_8px_rgba(255,185,95,0.6)]"></div>
+</td>
+<td class="p-4 font-label-md text-on-surface font-bold group-hover:text-primary transition-colors">POLE-ND-105</td>
+<td class="p-4 font-body-md text-on-surface-variant">New Delhi Station</td>
+<td class="p-4">
+<span class="px-2 py-1 rounded bg-tertiary-container/10 text-tertiary font-label-sm border border-tertiary/30">Solar + Fogging</span>
+</td>
+<td class="p-4 font-label-md text-on-surface-variant flex gap-4 items-center">
+<div class="flex items-center gap-1" title="Temperature"><span class="material-symbols-outlined text-[16px] text-tertiary">device_thermostat</span> 31 °C</div>
+<div class="flex items-center gap-1" title="Noise"><span class="material-symbols-outlined text-[16px] text-error">volume_up</span> 85 dB</div>
+<div class="flex items-center gap-1" title="Power Generated"><span class="material-symbols-outlined text-[16px] text-secondary">solar_power</span> 450 W</div>
+<div class="flex items-center gap-1" title="Energy Saved"><span class="material-symbols-outlined text-[16px] text-tertiary">battery_charging_full</span> 12 kWh</div>
+</td>
+</tr>
+<!-- Another Online Pole -->
+<tr class="hover:bg-surface-variant/50 transition-colors cursor-pointer group">
+<td class="p-4 flex justify-center">
+<div class="w-3 h-3 rounded-full bg-tertiary shadow-[0_0_8px_rgba(78,222,163,0.6)]"></div>
+</td>
+<td class="p-4 font-label-md text-on-surface font-bold group-hover:text-primary transition-colors">POLE-GZ-211</td>
+<td class="p-4 font-body-md text-on-surface-variant">Gurugram Cyber City</td>
+<td class="p-4">
+<span class="px-2 py-1 rounded bg-primary-container/10 text-primary font-label-sm border border-primary/30">Full Pole</span>
+</td>
+<td class="p-4 font-label-md text-on-surface-variant flex gap-4 items-center">
+<div class="flex items-center gap-1" title="Temperature"><span class="material-symbols-outlined text-[16px] text-tertiary">device_thermostat</span> 26 °C</div>
+<div class="flex items-center gap-1" title="Humidity"><span class="material-symbols-outlined text-[16px] text-primary">humidity_mid</span> 55 %</div>
+<div class="flex items-center gap-1" title="Air Quality"><span class="material-symbols-outlined text-[16px] text-secondary">air</span> 38 AQI</div>
+<div class="flex items-center gap-1" title="Power Draw"><span class="material-symbols-outlined text-[16px] text-on-surface-variant">bolt</span> 115 W</div>
+<div class="flex items-center gap-1" title="Illuminance"><span class="material-symbols-outlined text-[16px] text-on-surface-variant">light_mode</span> 720 lux</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Wide City Analytics Chart -->
+<section class="glass-panel p-card-padding rounded-lg border border-outline-variant flex flex-col gap-stack-md mt-gutter mb-8 shrink-0">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-on-surface">Water Savings by District</h2>
+<span class="font-label-md text-on-surface-variant uppercase">Current Month</span>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Bar 1 -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-md">
+<span class="text-on-surface">Connaught Place</span>
+<span class="text-tertiary">24.5 %</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 24.5%"></div>
+</div>
+</div>
+<!-- Bar 2 -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-md">
+<span class="text-on-surface">New Delhi Station</span>
+<span class="text-tertiary">18.2 %</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 18.2%"></div>
+</div>
+</div>
+<!-- Bar 3 -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-md">
+<span class="text-on-surface">Gurugram Cyber City</span>
+<span class="text-tertiary">15.8 %</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 15.8%"></div>
+</div>
+</div>
+<!-- Bar 4 -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-md">
+<span class="text-on-surface">South Extension</span>
+<span class="text-tertiary">12.4 %</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 12.4%"></div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

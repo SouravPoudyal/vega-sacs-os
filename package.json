@@ -1,0 +1,16 @@
+{
+  "name": "vega-sacs-web",
+  "version": "1.0.0",
+  "description": "VEGA SACS OS - multi-page smart city control console with live WebSocket-driven pole management",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ws": "^8.17.1"
+  }
+}

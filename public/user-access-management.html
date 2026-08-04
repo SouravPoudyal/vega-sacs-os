@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VEGA SACS / CITY GOVERNANCE OS - User &amp; Access Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "error-container": "#93000a",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "tertiary-container": "#1bbd85",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-variant": "#2d3449",
+                        "secondary-fixed": "#ffddb8",
+                        "on-tertiary-container": "#00452e",
+                        "background": "#0b1326",
+                        "surface-container-high": "#222a3d",
+                        "surface-container": "#171f33",
+                        "primary-fixed": "#acedff",
+                        "on-secondary": "#472a00",
+                        "surface-container-lowest": "#060e20",
+                        "surface-container-low": "#131b2e",
+                        "on-secondary-fixed": "#2a1700",
+                        "on-error-container": "#ffdad6",
+                        "primary": "#4cd7f6",
+                        "on-primary": "#003640",
+                        "surface-tint": "#4cd7f6",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "on-tertiary": "#003824",
+                        "on-background": "#dae2fd",
+                        "inverse-surface": "#dae2fd",
+                        "on-surface": "#dae2fd",
+                        "surface-dim": "#0b1326",
+                        "on-secondary-container": "#5b3800",
+                        "outline": "#869397",
+                        "surface-bright": "#31394d",
+                        "secondary-container": "#ee9800",
+                        "primary-container": "#06b6d4",
+                        "inverse-on-surface": "#283044",
+                        "on-primary-container": "#00424f",
+                        "surface-container-highest": "#2d3449",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "tertiary-fixed": "#6ffbbe",
+                        "error": "#ffb4ab",
+                        "surface": "#0b1326",
+                        "outline-variant": "#3d494c",
+                        "tertiary": "#4edea3",
+                        "secondary": "#ffb95f",
+                        "on-surface-variant": "#bcc9cd",
+                        "on-primary-fixed": "#001f26",
+                        "on-tertiary-fixed": "#002113",
+                        "inverse-primary": "#00687a"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        "top-nav-height": "64px",
+                        unit: "4px",
+                        "stack-sm": "8px",
+                        "card-padding": "16px",
+                        "stack-md": "16px",
+                        "sidebar-width": "240px",
+                        "margin-page": "24px",
+                        gutter: "16px",
+                        "stack-lg": "24px"
+                    },
+                    fontFamily: {
+                        "headline-xl": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    fontSize: {
+                        "headline-xl": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "headline-lg": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.08em", fontWeight: "500" }],
+                        "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "500" }],
+                        "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "headline-md": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+                        "headline-lg-mobile": ["20px", { lineHeight: "28px", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b1326; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3449; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3d494c; 
+        }
+        .glass-panel {
+            background-color: theme('colors.surface-container-highest');
+            border: 1px solid theme('colors.outline-variant');
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .neon-border-focus:focus-within { border-color: theme('colors.primary-container'); box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2); }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen overflow-x-hidden flex flex-col text-body-md">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-page bg-surface-container-high dark:bg-surface-container-high docked full-width border-b border-outline-variant dark:border-outline-variant flat no shadows">
+<div class="flex items-center gap-stack-lg">
+<!-- Brand Lockup -->
+<div class="flex items-center gap-stack-sm">
+<img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBze4A2CRxYkVIEM0V-QeCapzvm671jv48CDD7kWlXbsoAOhVkTno-c4fayfyeel4gnhrzzQWBA9qnDW7ezh6_9wnZOgdzwLahb0nBYkJG72E0Cq4h3VAFAB9agrSXvYImUvpNnSxGBwLSGNGhXOVfWQCYiUB-KBvCI1jy75vOxihF1RsyBz47o75HXGmchYH4-JIVEukdscTmL-CGKpHvi2GrMDoZ6KhkdpARsWXKnr9HZiIbzWXNey_islXJbiuxW3TQ"/>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight truncate hidden lg:block">VEGA SACS OS</span>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-stack-md ml-stack-lg">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200" href="fleet-overview.html">Fleet Overview</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200" href="pole-management.html">Pole Management</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200" href="energy-analytics.html">Energy Analytics</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200" href="fault-reporting.html">Fault Reporting</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-md">
+<div class="hidden lg:flex items-center bg-surface px-3 py-1.5 rounded border border-outline-variant neon-border-focus transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md text-on-surface py-0 px-2 w-48 placeholder-on-surface-variant" placeholder="Search node ID..." type="text"/>
+</div>
+<div class="hidden xl:flex items-center gap-unit bg-secondary-container/10 border border-secondary-container rounded-full px-3 py-1">
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+<span class="font-label-md text-label-md text-secondary-container">ACTION REQUIRED: 5 NODES</span>
+</div>
+<button class="bg-error text-on-error font-label-md text-label-md px-4 py-2 rounded hover:bg-error-container hover:text-on-error-container transition-colors duration-200 border border-transparent hover:border-error flex items-center gap-unit">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<span class="hidden sm:inline">Emergency Override</span>
+</button>
+<div class="flex items-center gap-stack-sm text-primary dark:text-primary border-l border-outline-variant pl-stack-md ml-stack-sm">
+<button class="p-2 hover:bg-surface-variant rounded transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 hover:bg-surface-variant rounded transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="ml-2 w-8 h-8 rounded bg-surface-variant overflow-hidden border border-outline-variant">
+<img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUAmrtckNdGlZbcsxuKV-QSqvNgOs5dSuNujTtfi8sp8GXJ50BqQdyyOoFzHAa3BAKjluyiDBaiDPhGk5u0ngyHFD5KQYcIV73eq5jyPIPjHx2uHQU4y5Rj_OO4VvCC5baCCTPwjatztv4GPmZ7vU-BGUIc6UXCdbG4HJKFGSwxQMNiufM__faz6UyoY4_H2WH60cbYMvgtWLywG6BVybl6bI2bLaHUR5ECT9PbwqQWvAh8Vm5FgH7WphR7rcrUg-MrUI"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 pt-40 h-[calc(100vh)]">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-40 h-[calc(100vh-160px)] w-sidebar-width bg-surface-container dark:bg-surface-container border-r border-outline-variant dark:border-outline-variant flat no shadows flex flex-col justify-between py-stack-lg z-40">
+<div>
+<!-- Main Nav -->
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all font-label-md text-label-md" href="automation-rules.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud_download</span>
+                        Automation Rules
+                    </a>
+<a class="flex items-center gap-stack-md text-primary dark:text-primary border-l-4 border-primary bg-surface-container-highest dark:bg-surface-container-highest px-4 py-3 hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all font-label-md text-label-md" href="user-access-management.html">
+<span class="material-symbols-outlined">manage_accounts</span>
+                        User &amp; Access Management
+                    </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all font-label-md text-label-md" href="integrations.html">
+<span class="material-symbols-outlined">extension</span>
+                        Integrations
+                    </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all font-label-md text-label-md" href="system-logs.html">
+<span class="material-symbols-outlined">description</span>
+                        System Logs
+                    </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-3 border-l-4 border-transparent hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface transition-all font-label-md text-label-md" href="billing-reporting.html">
+<span class="material-symbols-outlined">receipt_long</span>
+                        Billing/Reporting
+                    </a>
+</nav>
+</div>
+<div class="px-4">
+<button class="w-full bg-primary-container text-on-primary-container font-label-md text-label-md py-2 px-4 rounded border border-transparent hover:border-primary-container hover:bg-transparent hover:text-primary-container transition-all duration-200 mb-stack-lg">
+                    + New Pole Node
+                </button>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-2 border-l-4 border-transparent hover:text-primary transition-all font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">help</span>
+                        Help
+                    </a>
+<a class="flex items-center gap-stack-md text-on-surface-variant dark:text-on-surface-variant px-4 py-2 border-l-4 border-transparent hover:text-primary transition-all font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">logout</span>
+                        Sign Out
+                    </a>
+</nav>
+<div class="flex items-center gap-stack-sm pt-stack-md mt-stack-md border-t border-outline-variant">
+<div class="w-10 h-10 rounded bg-surface-variant overflow-hidden border border-outline-variant shrink-0">
+<img alt="Admin User" class="w-full h-full object-cover" data-alt="A small, stylized profile icon of an admin user." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEAaBe55SHcjhNNKqSFNokGbcvFUVyJq6dHzjKXS2rMs9GF9lrZpwI4VjQ56ElKh_U0mDsuOI1BgJAMsMZlE6Q_iC6DkxfZqu6KPkCwvz-FUm2kw41rhw9yDROOXQhDu6boGFPaZx1IN2-Rx6e9uR2kk7TN71ELds82q9sakE7UmEdizvQXPJAv5AWg9GYstl1KY43VicrT1FuM4Z296y_uXkZT9kin8JWrUobk7_t027TQ9HHdADj6A"/>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="font-label-md text-label-md text-on-surface truncate">Administrator</span>
+<span class="font-body-md text-[12px] text-on-surface-variant truncate text-body-md">Super User</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-sidebar-width flex-1 p-margin-page overflow-y-auto">
+<header class="mb-stack-lg flex justify-between items-end">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface">User &amp; Access Management</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage system operators, permissions, and security policies.</p>
+</div>
+<button class="bg-primary text-on-primary font-label-md text-label-md font-bold py-2 px-6 rounded hover:bg-primary-container transition-colors border border-transparent shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+                    Invite User
+                </button>
+</header>
+<!-- KPI Strip -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-stack-lg">
+<div class="bg-surface-container p-card-padding rounded border border-outline-variant/30 flex flex-col justify-between">
+<div class="font-label-sm text-label-sm text-on-surface-variant mb-2">TOTAL USERS</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-on-surface">142</span>
+<span class="font-label-md text-label-md text-tertiary flex items-center"><span class="material-symbols-outlined text-[14px]">arrow_upward</span> 12%</span>
+</div>
+</div>
+<div class="bg-surface-container p-card-padding rounded border border-outline-variant/30 flex flex-col justify-between">
+<div class="font-label-sm text-label-sm text-on-surface-variant mb-2">ACTIVE SESSIONS</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-on-surface">38</span>
+</div>
+</div>
+<div class="bg-surface-container p-card-padding rounded border border-outline-variant/30 flex flex-col justify-between">
+<div class="font-label-sm text-label-sm text-on-surface-variant mb-2">PENDING INVITES</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-secondary">7</span>
+</div>
+</div>
+<div class="bg-surface-container p-card-padding rounded border border-outline-variant/30 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute inset-0 bg-error/5 z-0 pointer-events-none"></div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mb-2 z-10 relative">SUSPENDED ACCOUNTS</div>
+<div class="flex items-baseline gap-2 z-10 relative">
+<span class="font-display-lg text-display-lg text-error">3</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Requires review</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout for Main Content -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Main User Table Area (Spans 2 columns) -->
+<div class="lg:col-span-2 space-y-gutter">
+<div class="bg-surface-container rounded border border-outline-variant/30 overflow-hidden flex flex-col h-full">
+<!-- Table Header/Filters -->
+<div class="p-card-padding border-b border-outline-variant/30 bg-surface-container-high/50 flex items-center justify-between">
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-surface-variant text-on-surface rounded-full font-label-md text-label-md border border-primary/50 text-primary">All</button>
+<button class="px-3 py-1 bg-surface text-on-surface-variant rounded-full font-label-md text-label-md border border-outline-variant/50 hover:bg-surface-variant transition-colors">Super User</button>
+<button class="px-3 py-1 bg-surface text-on-surface-variant rounded-full font-label-md text-label-md border border-outline-variant/50 hover:bg-surface-variant transition-colors">Operator</button>
+<button class="px-3 py-1 bg-surface text-on-surface-variant rounded-full font-label-md text-label-md border border-outline-variant/50 hover:bg-surface-variant transition-colors">Technician</button>
+<button class="px-3 py-1 bg-surface text-on-surface-variant rounded-full font-label-md text-label-md border border-outline-variant/50 hover:bg-surface-variant transition-colors">Viewer</button>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="bg-surface border border-outline-variant/50 rounded pl-9 pr-3 py-1.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-64" placeholder="Search users..." type="text"/>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high/30 border-b border-outline-variant/30 font-label-sm text-label-sm text-on-surface-variant">
+<th class="p-4 font-medium uppercase">User</th>
+<th class="p-4 font-medium uppercase">Role</th>
+<th class="p-4 font-medium uppercase">Status</th>
+<th class="p-4 font-medium uppercase">Last Login</th>
+<th class="p-4 font-medium uppercase text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md divide-y divide-outline-variant/20">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-variant/30 transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<img alt="Sarah Jenkins" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot avatar for a female system administrator. She has a neutral expression, wearing a dark blazer over a lighter collared shirt. The background is a non-distracting, blurry tech office setting. High quality, well-lit, corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHdmkcJkXX-WOiT2-f14rmevgEVMbisX4mf9O2vHHcWV_Wzm9ECkrDT12IuUiUu21TJR2qRtVjo2AFbyvIwmR5F4hbA-RK59hs7a4LWUelJcR0TlQvakCFOQ3zyRIgjBnAoUVWRDNVSkzHL0gjp8g6hInT00fuNteZb39_R1Kshx2yjb8svnewTCr63on0AgzUJ2-CKQPAqWjvoIVe445VTh6W4BcLqFJvpsYvX1e0AznDg9Bktg3_Hg"/>
+<div>
+<div class="font-medium text-on-surface">Sarah Jenkins</div>
+<div class="text-on-surface-variant text-xs">s.jenkins@vegasacs.gov</div>
+</div>
+</div>
+</td>
+<td class="p-4">Super User</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary font-label-sm text-label-sm border border-tertiary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                                Active
+                                            </span>
+</td>
+<td class="p-4 text-on-surface-variant">10 mins ago</td>
+<td class="p-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined text-[18px]">block</span></button>
+<button class="text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-variant/30 transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-bright flex items-center justify-center font-bold text-on-surface border border-outline-variant">MR</div>
+<div>
+<div class="font-medium text-on-surface">Marcus Reed</div>
+<div class="text-on-surface-variant text-xs">m.reed@vegasacs.gov</div>
+</div>
+</div>
+</td>
+<td class="p-4">Operator</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm border border-secondary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                                Invited
+                                            </span>
+</td>
+<td class="p-4 text-on-surface-variant">-</td>
+<td class="p-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined text-[18px]">block</span></button>
+<button class="text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-variant/30 transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<img alt="David Chen" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot avatar for a male field technician. He is wearing a high-visibility orange vest over a grey shirt, looking slightly off-camera. The background shows blurred city infrastructure. Realistic, gritty but professional lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoe-Rs39AzGiBJslZmO8ZOCcpqPVUNBaeBzZttbCGaZOb8lSz1H1jv0h_DBa6kFXkDI9c_ze50vVjZldgBdR2u-pFXNEBWwJ9lL3VHlCefBD1fV9Bp_4OJDVhQawV7nZzbOYYPB9xEDARYJHbRIsqzlI9OnQ5b7gHLW8YEovS8TDE-bZJC78LOv14NY_HmFnOdaEZ_hT9_PwHnVFB7MqZfQma7qrYv5zbqOhl2NCnEe6e0qZLVKdfGlQ"/>
+<div>
+<div class="font-medium text-on-surface">David Chen</div>
+<div class="text-on-surface-variant text-xs">d.chen@vegasacs.gov</div>
+</div>
+</div>
+</td>
+<td class="p-4">Technician</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary font-label-sm text-label-sm border border-tertiary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                                Active
+                                            </span>
+</td>
+<td class="p-4 text-on-surface-variant">2 hours ago</td>
+<td class="p-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined text-[18px]">block</span></button>
+<button class="text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4 (Suspended) -->
+<tr class="hover:bg-surface-variant/30 transition-colors group bg-error/5">
+<td class="p-4">
+<div class="flex items-center gap-3 opacity-50">
+<div class="w-8 h-8 rounded-full bg-surface-bright flex items-center justify-center font-bold text-on-surface border border-outline-variant">EL</div>
+<div>
+<div class="font-medium text-on-surface line-through decoration-error">Elena Lopez</div>
+<div class="text-on-surface-variant text-xs">e.lopez@vegasacs.gov</div>
+</div>
+</div>
+</td>
+<td class="p-4 opacity-50">Viewer</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-error/10 text-error font-label-sm text-label-sm border border-error/20">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                                Suspended
+                                            </span>
+</td>
+<td class="p-4 text-on-surface-variant">3 days ago</td>
+<td class="p-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-primary transition-colors" title="Restore"><span class="material-symbols-outlined text-[18px]">settings_backup_restore</span></button>
+<button class="text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[18px]">delete_forever</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-outline-variant/30 flex justify-between items-center text-on-surface-variant font-label-md text-label-md bg-surface-container-high/20 mt-auto">
+<span>Showing 1-4 of 142 users</span>
+<div class="flex gap-2">
+<button class="px-2 py-1 rounded hover:bg-surface-variant transition-colors disabled:opacity-50" disabled="">&lt; Prev</button>
+<button class="px-2 py-1 rounded hover:bg-surface-variant transition-colors">Next &gt;</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Context Panels -->
+<div class="space-y-gutter flex flex-col">
+<!-- Permissions Reference Panel -->
+<div class="bg-surface-container rounded border border-outline-variant/30 p-card-padding">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">policy</span>
+                            Role Permissions Reference
+                        </h3>
+<div class="space-y-4">
+<div class="p-3 bg-surface rounded border border-outline-variant/20 relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex justify-between items-start mb-1 ml-2">
+<span class="font-bold text-on-surface font-body-md text-body-md">Super User</span>
+<span class="material-symbols-outlined text-primary text-[16px]">admin_panel_settings</span>
+</div>
+<p class="text-on-surface-variant font-body-md text-xs ml-2 text-body-md">Full system access. Can modify roles, billing, and system-wide configurations.</p>
+</div>
+<div class="p-3 bg-surface rounded border border-outline-variant/20 relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex justify-between items-start mb-1 ml-2">
+<span class="font-bold text-on-surface font-body-md text-body-md">Operator</span>
+<span class="material-symbols-outlined text-secondary text-[16px]">tune</span>
+</div>
+<p class="text-on-surface-variant font-body-md text-xs ml-2 text-body-md">Control poles, deploy emergency overrides, manage fleet overview.</p>
+</div>
+<div class="p-3 bg-surface rounded border border-outline-variant/20 relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary"></div>
+<div class="flex justify-between items-start mb-1 ml-2">
+<span class="font-bold text-on-surface font-body-md text-body-md">Technician</span>
+<span class="material-symbols-outlined text-tertiary text-[16px]">construction</span>
+</div>
+<p class="text-on-surface-variant font-body-md text-xs ml-2 text-body-md">Resolve fault reports, update node status, view technical logs.</p>
+</div>
+<div class="p-3 bg-surface rounded border border-outline-variant/20 relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-outline"></div>
+<div class="flex justify-between items-start mb-1 ml-2">
+<span class="font-bold text-on-surface font-body-md text-body-md">Viewer</span>
+<span class="material-symbols-outlined text-outline text-[16px]">visibility</span>
+</div>
+<p class="text-on-surface-variant font-body-md text-xs ml-2 text-body-md">Read-only access to analytics and dashboards.</p>
+</div>
+</div>
+</div>
+<!-- Recent Access Log -->
+<div class="bg-surface-container rounded border border-outline-variant/30 p-card-padding flex-1 flex flex-col">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">history</span>
+                            Recent Access Log
+                        </h3>
+<div class="flex-1 overflow-y-auto pr-2 space-y-4">
+<div class="flex gap-3">
+<div class="flex flex-col items-center">
+<div class="w-2 h-2 rounded-full bg-primary mt-1.5"></div>
+<div class="w-px h-full bg-outline-variant/50 my-1"></div>
+</div>
+<div>
+<div class="font-body-md text-on-surface text-sm text-body-md">Role upgraded to <span class="text-primary font-medium">Super User</span> for Sarah Jenkins</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-1">by SYSTEM • 14:32 Today</div>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="flex flex-col items-center">
+<div class="w-2 h-2 rounded-full bg-secondary mt-1.5"></div>
+<div class="w-px h-full bg-outline-variant/50 my-1"></div>
+</div>
+<div>
+<div class="font-body-md text-on-surface text-sm text-body-md">Invite sent to Marcus Reed (Operator)</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-1">by Sarah Jenkins • 09:15 Today</div>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="flex flex-col items-center">
+<div class="w-2 h-2 rounded-full bg-error mt-1.5"></div>
+<div class="w-px h-full bg-outline-variant/50 my-1"></div>
+</div>
+<div>
+<div class="font-body-md text-on-surface text-sm text-body-md">Account <span class="text-error font-medium">Suspended</span> for Elena Lopez</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-1">by Auto-Security Policy • 23:45 Yesterday</div>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="flex flex-col items-center">
+<div class="w-2 h-2 rounded-full bg-tertiary mt-1.5"></div>
+</div>
+<div>
+<div class="font-body-md text-on-surface text-sm text-body-md">New login from new device (David Chen)</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-1">IP 192.168.1.45 • 18:20 Yesterday</div>
+</div>
+</div>
+</div>
+<button class="mt-4 w-full text-center text-primary font-label-md text-label-md hover:underline">View Full Log</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
