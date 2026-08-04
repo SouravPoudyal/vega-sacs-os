@@ -81,10 +81,7 @@ wss.on('connection', (ws, req) => {
 
   if (role === 'device') {
     devices.add(ws);
-    ws.isAlive = true;
     console.log('[device] connected. total devices:', devices.size);
-
-    ws.on('pong', () => { ws.isAlive = true; });
 
     ws.on('message', (raw) => {
       const text = raw.toString().trim();
@@ -103,11 +100,8 @@ wss.on('connection', (ws, req) => {
     ws.on('error', (err) => console.error('[device] error:', err.message));
   } else if (role === 'dashboard') {
     dashboards.add(ws);
-    ws.isAlive = true;
     ws.send(JSON.stringify({ type: 'sensor', ...lastSensor }));
     ws.send(JSON.stringify({ type: 'status', devices: devices.size }));
-
-    ws.on('pong', () => { ws.isAlive = true; });
 
     ws.on('message', (raw) => {
       let cmd;
@@ -130,25 +124,6 @@ wss.on('connection', (ws, req) => {
 
 // Simple health check Render (and you) can hit to confirm it's alive.
 app.get('/healthz', (req, res) => res.send('ok'));
-
-// Heartbeat: every 30s, ping every connected client. Any client that
-// didn't respond to the PREVIOUS ping (isAlive still false) is dead —
-// terminate it so a silently-dropped ESP32/browser doesn't linger in
-// the devices/dashboards sets and swallow broadcasts into the void.
-const HEARTBEAT_INTERVAL_MS = 30000;
-setInterval(() => {
-  for (const ws of wss.clients) {
-    if (ws.isAlive === false) {
-      const wasDevice = devices.has(ws);
-      devices.delete(ws);
-      dashboards.delete(ws);
-      if (wasDevice) console.log('[device] heartbeat timeout, terminating stale connection. total devices:', devices.size);
-      return ws.terminate();
-    }
-    ws.isAlive = false;
-    ws.ping();
-  }
-}, HEARTBEAT_INTERVAL_MS);
 
 server.listen(PORT, () => {
   console.log(`Smart City relay server listening on port ${PORT}`);
