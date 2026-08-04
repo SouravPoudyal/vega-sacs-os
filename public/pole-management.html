@@ -114,9 +114,9 @@
         .neon-border-focus:focus-within { border-color: theme('colors.primary-container'); box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2); }
         /* Custom scrollbar for deep-sea theme */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: theme('colors.surface'); }
-        ::-webkit-scrollbar-thumb { background: theme('colors.surface-container-high'); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: theme('colors.surface-bright'); }
+        ::-webkit-scrollbar-track { background: #0b1326; }
+        ::-webkit-scrollbar-thumb { background: #222a3d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #31394d; }
 
         /* --- LED Matrix live control widgets --- */
         .flash-value { transition: color .25s ease, text-shadow .25s ease; }
@@ -155,17 +155,17 @@
 
         input[type=color].swatch-custom { width: 40px; height: 40px; border: none; border-radius: 9999px; background: none; padding: 0; cursor: pointer; }
         input[type=color].swatch-custom::-webkit-color-swatch-wrapper { padding: 0; border-radius: 9999px; }
-        input[type=color].swatch-custom::-webkit-color-swatch { border: 2px solid theme('colors.outline-variant'); border-radius: 9999px; }
+        input[type=color].swatch-custom::-webkit-color-swatch { border: 2px solid #3d494c; border-radius: 9999px; }
 
-        input[type=range].vega-range { -webkit-appearance: none; width: 100%; height: 24px; background: transparent; }
-        input[type=range].vega-range::-webkit-slider-runnable-track { height: 4px; background: theme('colors.surface-bright'); border-radius: 3px; }
+        input[type=range].vega-range { -webkit-appearance: none; appearance: none; width: 100%; height: 24px; background: transparent; cursor: pointer; }
+        input[type=range].vega-range::-webkit-slider-runnable-track { height: 4px; background: #31394d; border-radius: 3px; }
         input[type=range].vega-range::-webkit-slider-thumb {
             -webkit-appearance: none; margin-top: -8px; width: 18px; height: 18px; border-radius: 50%;
-            background: theme('colors.primary'); border: 3px solid theme('colors.surface-container-highest');
-            box-shadow: 0 0 10px -1px theme('colors.primary');
+            background: #4cd7f6; border: 3px solid #2d3449;
+            box-shadow: 0 0 10px -1px #4cd7f6;
         }
-        input[type=range].vega-range::-moz-range-track { height: 4px; background: theme('colors.surface-bright'); border-radius: 3px; }
-        input[type=range].vega-range::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: theme('colors.primary'); border: 3px solid theme('colors.surface-container-highest'); }
+        input[type=range].vega-range::-moz-range-track { height: 4px; background: #31394d; border-radius: 3px; }
+        input[type=range].vega-range::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #4cd7f6; border: 3px solid #2d3449; }
 
         #ledHistoryChart { width: 100%; height: 200px; display: block; border-radius: 0.5rem; background: theme('colors.surface'); }
     </style>
