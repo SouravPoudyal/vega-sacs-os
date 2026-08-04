@@ -657,7 +657,11 @@ let currentMode = null; // 0-8, mirrors firmware Display Mode
 function connect() {
   socket = new WebSocket(wsUrl);
   socket.addEventListener('open', () => { setConn(true); reconnectDelay = 1000; });
-  socket.addEventListener('close', () => {
+  socket.addEventListener('close', (event) => {
+    if (event.code === 4001) {
+      setConn(false, 'Unauthorized — missing/invalid ?token in URL');
+      return; // retrying won't fix an auth failure; stop hammering the server
+    }
     setConn(false);
     setTimeout(connect, reconnectDelay);
     reconnectDelay = Math.min(reconnectDelay * 1.5, 10000);
@@ -672,12 +676,12 @@ function connect() {
   });
 }
 
-function setConn(ok) {
+function setConn(ok, label) {
   const wrap = document.getElementById('nodeStatusWrap');
   const dot = document.getElementById('nodeStatusDot');
-  const label = document.getElementById('nodeStatusLabel');
+  const labelEl = document.getElementById('nodeStatusLabel');
   if (!wrap) return;
-  label.textContent = ok ? 'ONLINE' : 'RECONNECTING';
+  labelEl.textContent = label || (ok ? 'ONLINE' : 'RECONNECTING');
   wrap.classList.toggle('bg-tertiary/10', ok);
   wrap.classList.toggle('border-tertiary/20', ok);
   wrap.classList.toggle('bg-error/10', !ok);
@@ -685,8 +689,8 @@ function setConn(ok) {
   dot.classList.toggle('bg-tertiary', ok);
   dot.classList.toggle('bg-error', !ok);
   dot.classList.toggle('animate-pulse', ok);
-  label.classList.toggle('text-tertiary', ok);
-  label.classList.toggle('text-error', !ok);
+  labelEl.classList.toggle('text-tertiary', ok);
+  labelEl.classList.toggle('text-error', !ok);
 }
 
 function sendCmd(cmd) {
@@ -900,4 +904,21 @@ window.addEventListener('resize', drawHistoryChart);
 connect();
 setMode(0, false); // neutral UI state until the first live state/sensor message arrives
 </script>
+<script>
+  // Preserve ?token=... (and any other query params) across in-app
+  // navigation. The Pole Management page's WebSocket connection needs
+  // the same token it was loaded with; without this, clicking between
+  // tabs (or bookmarking/reloading a page directly) drops the token,
+  // the server closes the dashboard socket as unauthorized, and the
+  // page is stuck "Reconnecting" with no live data or command control.
+  (function () {
+    var qs = location.search;
+    if (!qs) return;
+    document.querySelectorAll('a[href$=".html"]').forEach(function (a) {
+      if (a.getAttribute('href').indexOf('?') === -1) {
+        a.setAttribute('href', a.getAttribute('href') + qs);
+      }
+    });
+  })();
+  </script>
 </body></html>

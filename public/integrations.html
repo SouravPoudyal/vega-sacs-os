@@ -489,4 +489,21 @@
 </div>
 </main>
 </div>
+<script>
+  // Preserve ?token=... (and any other query params) across in-app
+  // navigation. The Pole Management page's WebSocket connection needs
+  // the same token it was loaded with; without this, clicking between
+  // tabs (or bookmarking/reloading a page directly) drops the token,
+  // the server closes the dashboard socket as unauthorized, and the
+  // page is stuck "Reconnecting" with no live data or command control.
+  (function () {
+    var qs = location.search;
+    if (!qs) return;
+    document.querySelectorAll('a[href$=".html"]').forEach(function (a) {
+      if (a.getAttribute('href').indexOf('?') === -1) {
+        a.setAttribute('href', a.getAttribute('href') + qs);
+      }
+    });
+  })();
+  </script>
 </body></html>
