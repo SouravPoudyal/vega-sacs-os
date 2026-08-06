@@ -330,6 +330,17 @@
 <span class="font-label-md text-label-md text-on-surface-variant">%</span>
 </div>
 </div>
+<!-- Load Current (ACS756, A1) -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-primary">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">bolt</span>
+<span class="font-label-md text-label-md">Load Current</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveCurrent">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">A</span>
+</div>
+</div>
 <!-- AQI -->
 <div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-tertiary">
 <div class="flex items-center gap-2 text-on-surface-variant">
@@ -736,6 +747,7 @@ function updateSensors(msg) {
   flashValue('liveTemp', msg.temp);
   flashValue('liveHum', msg.hum);
   flashValue('liveSoil', msg.soil);
+  flashValue('liveCurrent', typeof msg.current !== 'undefined' ? Number(msg.current).toFixed(3) : '--');
   recordHistory(msg.temp, msg.hum, msg.soil);
 }
 

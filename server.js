@@ -11,9 +11,9 @@
                            this server serves at "/"
 
    Flow:
-     Aries --(UART, "<SENSOR,TEMP:24.0,HUM:55,SOIL:42>")--> ESP32
-     ESP32 --(WebSocket text: "SENSOR,TEMP:24.0,HUM:55,SOIL:42")--> here
-     here --(broadcast JSON {type:"sensor",temp,hum,soil})--> dashboards
+     Aries --(UART, "<SENSOR,TEMP:24.0,HUM:55,SOIL:42,CURRENT:1.234>")--> ESP32
+     ESP32 --(WebSocket text: "SENSOR,TEMP:24.0,HUM:55,SOIL:42,CURRENT:1.234")--> here
+     here --(broadcast JSON {type:"sensor",temp,hum,soil,current})--> dashboards
 
      dashboard --(WebSocket JSON {cmd:"..."})--> here
      here --(forward raw cmd string)--> ESP32
@@ -47,19 +47,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Last known sensor reading, served immediately to any dashboard
 // that connects before the next broadcast arrives.
-let lastSensor = { temp: '--', hum: '--', soil: '--' };
+let lastSensor = { temp: '--', hum: '--', soil: '--', current: '--' };
 
 const devices = new Set();
 const dashboards = new Set();
 
 function parseSensorFrame(frame) {
-  // Expected: "SENSOR,TEMP:24.0,HUM:55,SOIL:42"
+  // Expected: "SENSOR,TEMP:24.0,HUM:55,SOIL:42,CURRENT:1.234"
   if (!frame.startsWith('SENSOR')) return null;
   const t = frame.match(/TEMP:([^,]*)/);
   const h = frame.match(/HUM:([^,]*)/);
-  const s = frame.match(/SOIL:(.*)/);
+  const s = frame.match(/SOIL:([^,]*)/);
+  const c = frame.match(/CURRENT:([^,]*)/);
   if (!t || !h || !s) return null;
-  return { temp: t[1].trim(), hum: h[1].trim(), soil: s[1].trim() };
+  return {
+    temp: t[1].trim(),
+    hum: h[1].trim(),
+    soil: s[1].trim(),
+    current: c ? c[1].trim() : '--', // older firmware without ACS756 just won't have this field
+  };
 }
 
 function broadcast(set, data) {
