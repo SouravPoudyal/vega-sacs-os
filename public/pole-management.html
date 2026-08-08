@@ -168,6 +168,7 @@
         input[type=range].vega-range::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #4cd7f6; border: 3px solid #2d3449; }
 
         #ledHistoryChart { width: 100%; height: 200px; display: block; border-radius: 0.5rem; background: theme('colors.surface'); }
+        #currentHistoryChart { width: 100%; height: 200px; display: block; border-radius: 0.5rem; background: theme('colors.surface'); }
     </style>
 </head>
 <body class="bg-background text-on-surface font-body-md min-h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
@@ -622,6 +623,21 @@ Open full LED control <span class="material-symbols-outlined text-sm">arrow_down
 <button class="px-3 py-1 rounded border border-outline-variant hover:border-on-surface-variant" onclick="clearHistory()">Clear</button>
 </div>
 </div>
+
+<!-- Load Current History -->
+<div class="glass-panel p-card-padding rounded-lg mt-4">
+<div class="flex items-center justify-between mb-3">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Load Current History</div>
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant"><span class="w-2 h-2 rounded-full inline-block" style="background:#4cd7f6"></span>Current (A)</span>
+</div>
+</div>
+<canvas id="currentHistoryChart" height="200"></canvas>
+<div class="flex justify-between items-center mt-3 font-label-sm text-label-sm text-on-surface-variant">
+<span id="currentHistoryCount">0 readings</span>
+<button class="px-3 py-1 rounded border border-outline-variant hover:border-on-surface-variant" onclick="clearCurrentHistory()">Clear</button>
+</div>
+</div>
 </div>
 
 <!-- 5. FAULT LOG (Col 9-12) -->
@@ -749,6 +765,7 @@ function updateSensors(msg) {
   flashValue('liveSoil', msg.soil);
   flashValue('liveCurrent', typeof msg.current !== 'undefined' ? Number(msg.current).toFixed(3) : '--');
   recordHistory(msg.temp, msg.hum, msg.soil);
+  recordCurrentHistory(msg.current);
 }
 
 // ---------- Display mode (Off/Scroll/Flag/EQ/Solid/Festival/Figures/Temp-Hum/Soil) ----------
@@ -936,6 +953,93 @@ function drawHistoryChart() {
 }
 
 window.addEventListener('resize', drawHistoryChart);
+
+// ---------- Load Current history chart (ACS756) ----------
+const CURRENT_HISTORY_MAX = 120;
+const currentHistory = { t: [], current: [] };
+
+function recordCurrentHistory(current) {
+  let nCurrent = parseFloat(current);
+  // Treat missing/invalid reads (NaN or negative) as a gap, same convention as recordHistory().
+  if (isNaN(nCurrent) || nCurrent < 0) nCurrent = NaN;
+  if (isNaN(nCurrent)) return;
+  currentHistory.t.push(Date.now());
+  currentHistory.current.push(nCurrent);
+  if (currentHistory.t.length > CURRENT_HISTORY_MAX) {
+    currentHistory.t.shift(); currentHistory.current.shift();
+  }
+  const countEl = document.getElementById('currentHistoryCount');
+  if (countEl) countEl.textContent = currentHistory.t.length + ' readings';
+  drawCurrentHistoryChart();
+}
+
+function clearCurrentHistory() {
+  currentHistory.t.length = 0; currentHistory.current.length = 0;
+  const countEl = document.getElementById('currentHistoryCount');
+  if (countEl) countEl.textContent = '0 readings';
+  drawCurrentHistoryChart();
+}
+
+function drawCurrentHistoryChart() {
+  const canvas = document.getElementById('currentHistoryChart');
+  if (!canvas) return;
+  const wrap = canvas.parentElement;
+  const cssWidth = wrap.clientWidth;
+  const cssHeight = 200;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = cssWidth * dpr;
+  canvas.height = cssHeight * dpr;
+  canvas.style.width = cssWidth + 'px';
+  canvas.style.height = cssHeight + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, cssWidth, cssHeight);
+
+  const pad = { l: 34, r: 8, t: 10, b: 18 };
+  const plotW = cssWidth - pad.l - pad.r;
+  const plotH = cssHeight - pad.t - pad.b;
+
+  if (currentHistory.t.length < 2) {
+    ctx.fillStyle = 'rgba(188,201,205,0.7)';
+    ctx.font = '12px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Waiting for current readings…', cssWidth / 2, cssHeight / 2);
+    return;
+  }
+
+  // Auto-scale the Y axis to the data — current draw has no fixed range like
+  // the 0-100% sensors above, so a hardcoded scale would either clip real
+  // spikes or waste most of the chart on empty space.
+  const dataMax = Math.max(...currentHistory.current);
+  const yMin = 0;
+  const yMax = dataMax <= 0 ? 1 : dataMax * 1.2;
+
+  ctx.strokeStyle = 'rgba(134,147,151,0.35)';
+  ctx.lineWidth = 1;
+  ctx.fillStyle = 'rgba(188,201,205,0.8)';
+  ctx.font = '9px JetBrains Mono, monospace';
+  ctx.textAlign = 'right';
+  const gridSteps = 4;
+  for (let i = 0; i <= gridSteps; i++) {
+    const v = yMin + (yMax - yMin) * (i / gridSteps);
+    const y = pad.t + plotH - ((v - yMin) / (yMax - yMin)) * plotH;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(cssWidth - pad.r, y); ctx.stroke();
+    ctx.fillText(v.toFixed(2), pad.l - 4, y + 3);
+  }
+
+  ctx.beginPath();
+  currentHistory.current.forEach((v, i) => {
+    const x = pad.l + (i / (currentHistory.current.length - 1)) * plotW;
+    const y = pad.t + plotH - ((v - yMin) / (yMax - yMin)) * plotH;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = '#4cd7f6';
+  ctx.lineWidth = 2;
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+}
+
+window.addEventListener('resize', drawCurrentHistoryChart);
 
 connect();
 setMode(0, false); // neutral UI state until the first live state/sensor message arrives
