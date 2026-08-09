@@ -11,9 +11,11 @@
                            this server serves at "/"
 
    Flow:
-     Aries --(UART, "<SENSOR,TEMP:24.0,HUM:55,SOIL:42,CURRENT:1.234>")--> ESP32
-     ESP32 --(WebSocket text: "SENSOR,TEMP:24.0,HUM:55,SOIL:42,CURRENT:1.234")--> here
-     here --(broadcast JSON {type:"sensor",temp,hum,soil,current})--> dashboards
+     Aries --(UART, "<SENSOR,TEMP:24.0,HUM:55,SOIL:42,LUX:120.5,
+                      BRIGHT:50,AUTOBRIGHT:0,PUMP:0,PM25:-1,PM10:-1>")--> ESP32
+     ESP32 --(WebSocket text: same "SENSOR,..." string)--> here
+     here --(broadcast JSON {type:"sensor",temp,hum,soil,lux,bright,
+                              autobright,pump,pm25,pm10})--> dashboards
 
      dashboard --(WebSocket JSON {cmd:"..."})--> here
      here --(forward raw cmd string)--> ESP32
@@ -47,24 +49,39 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Last known sensor reading, served immediately to any dashboard
 // that connects before the next broadcast arrives.
-let lastSensor = { temp: '--', hum: '--', soil: '--', current: '--' };
+let lastSensor = {
+  temp: '--', hum: '--', soil: '--',
+  lux: '--', bright: '--', autobright: '0',
+  pump: '0', pm25: '--', pm10: '--',
+};
 
 const devices = new Set();
 const dashboards = new Set();
 
 function parseSensorFrame(frame) {
-  // Expected: "SENSOR,TEMP:24.0,HUM:55,SOIL:42,CURRENT:1.234"
+  // Expected: "SENSOR,TEMP:24.0,HUM:55,SOIL:42,LUX:120.5,BRIGHT:50,
+  //            AUTOBRIGHT:0,PUMP:0,PM25:-1,PM10:-1"
   if (!frame.startsWith('SENSOR')) return null;
-  const t = frame.match(/TEMP:([^,]*)/);
-  const h = frame.match(/HUM:([^,]*)/);
-  const s = frame.match(/SOIL:([^,]*)/);
-  const c = frame.match(/CURRENT:([^,]*)/);
+  const t   = frame.match(/TEMP:([^,]*)/);
+  const h   = frame.match(/HUM:([^,]*)/);
+  const s   = frame.match(/SOIL:([^,]*)/);
+  const lx  = frame.match(/LUX:([^,]*)/);
+  const br  = frame.match(/BRIGHT:([^,]*)/);
+  const ab  = frame.match(/AUTOBRIGHT:([^,]*)/);
+  const pm  = frame.match(/PUMP:([^,]*)/);
+  const p25 = frame.match(/PM25:([^,]*)/);
+  const p10 = frame.match(/PM10:([^,]*)/);
   if (!t || !h || !s) return null;
   return {
     temp: t[1].trim(),
     hum: h[1].trim(),
     soil: s[1].trim(),
-    current: c ? c[1].trim() : '--', // older firmware without ACS756 just won't have this field
+    lux: lx ? lx[1].trim() : '--',
+    bright: br ? br[1].trim() : '--',
+    autobright: ab ? ab[1].trim() : '0',
+    pump: pm ? pm[1].trim() : '0',
+    pm25: p25 ? p25[1].trim() : '--',
+    pm10: p10 ? p10[1].trim() : '--',
   };
 }
 
