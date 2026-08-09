@@ -331,77 +331,87 @@
 <span class="font-label-md text-label-md text-on-surface-variant">%</span>
 </div>
 </div>
-<!-- Load Current (ACS756, A1) -->
-<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-primary">
+<!-- Load Current (ACS756) — sensor removed from firmware (DC-only
+     deployment); card kept as a placeholder in case AC current
+     sensing is added back later. Delete this block if not needed. -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-primary opacity-60">
 <div class="flex items-center gap-2 text-on-surface-variant">
 <span class="material-symbols-outlined text-sm">bolt</span>
 <span class="font-label-md text-label-md">Load Current</span>
 </div>
 <div class="flex items-baseline gap-1">
-<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveCurrent">--</span>
+<span class="font-display-lg text-display-lg text-on-surface" id="liveCurrent">--</span>
 <span class="font-label-md text-label-md text-on-surface-variant">A</span>
 </div>
 </div>
-<!-- AQI -->
+<!-- AQI: PM2.5 -->
 <div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-tertiary">
 <div class="flex items-center gap-2 text-on-surface-variant">
 <span class="material-symbols-outlined text-sm">air</span>
-<span class="font-label-md text-label-md">AQI</span>
+<span class="font-label-md text-label-md">PM2.5</span>
 </div>
-<div class="flex justify-between items-end">
 <div class="flex items-baseline gap-1">
-<span class="font-display-lg text-display-lg text-tertiary">42</span>
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="livePm25">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">µg/m³</span>
 </div>
-<span class="font-label-sm text-label-sm text-tertiary bg-tertiary/10 px-2 py-0.5 rounded">GOOD</span>
+</div>
+<!-- AQI: PM10 -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-tertiary">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">air</span>
+<span class="font-label-md text-label-md">PM10</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="livePm10">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">µg/m³</span>
 </div>
 </div>
-<!-- Noise (Amber) -->
-<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-secondary bg-secondary/5">
+<!-- Noise (Amber) — not currently broadcast; placeholder -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-secondary bg-secondary/5 opacity-60">
 <div class="flex items-center gap-2 text-secondary">
 <span class="material-symbols-outlined text-sm">volume_up</span>
 <span class="font-label-md text-label-md">Ambient Noise</span>
 </div>
-<div class="flex justify-between items-end">
 <div class="flex items-baseline gap-1">
-<span class="font-display-lg text-display-lg text-secondary">85</span>
+<span class="font-display-lg text-display-lg text-secondary">--</span>
 <span class="font-label-md text-label-md text-secondary/70">dB</span>
 </div>
-<span class="material-symbols-outlined text-secondary text-sm">warning</span>
 </div>
-</div>
-<!-- Light Level -->
+<!-- Light Level (RS485 lux sensor on ESP32) -->
 <div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32">
 <div class="flex items-center gap-2 text-on-surface-variant">
 <span class="material-symbols-outlined text-sm">light_mode</span>
 <span class="font-label-md text-label-md">Light Level</span>
 </div>
 <div class="flex items-baseline gap-1">
-<span class="font-display-lg text-display-lg text-on-surface">450</span>
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveLux">--</span>
 <span class="font-label-md text-label-md text-on-surface-variant">lux</span>
 </div>
 </div>
-<!-- Wind Speed -->
-<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32">
+<!-- Wind Speed — no wind sensor wired to the firmware; card kept as a
+     placeholder in case one is added later. Delete this block if not
+     needed. -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 opacity-60">
 <div class="flex items-center gap-2 text-on-surface-variant">
 <span class="material-symbols-outlined text-sm">cyclone</span>
 <span class="font-label-md text-label-md">Wind Speed</span>
 </div>
 <div class="flex items-baseline gap-1">
-<span class="font-display-lg text-display-lg text-on-surface">12</span>
+<span class="font-display-lg text-display-lg text-on-surface" id="liveWindSpeed">--</span>
 <span class="font-label-md text-label-md text-on-surface-variant">km/h</span>
 </div>
 </div>
-<!-- Wind Direction -->
-<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32">
+<!-- Wind Direction — same as above, no sensor wired. -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 opacity-60">
 <div class="flex items-center gap-2 text-on-surface-variant">
 <span class="material-symbols-outlined text-sm">explore</span>
 <span class="font-label-md text-label-md">Wind Direction</span>
 </div>
 <div class="flex justify-between items-end">
 <div class="flex items-baseline gap-1">
-<span class="font-display-lg text-display-lg text-on-surface">NE</span>
+<span class="font-display-lg text-display-lg text-on-surface" id="liveWindDir">--</span>
 </div>
-<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-variant px-2 py-0.5 rounded">42°</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-variant px-2 py-0.5 rounded" id="liveWindDeg">--°</span>
 </div>
 </div>
 </div>
@@ -607,6 +617,38 @@ Open full LED control <span class="material-symbols-outlined text-sm">arrow_down
 </div>
 </div>
 
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Streetlight Brightness (PWM1) -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col gap-3">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-1">Streetlight Brightness (PWM1)</div>
+<div class="grid grid-cols-2 gap-2" id="brightModeButtons">
+<button class="chip-btn active" data-brightmode="manual" onclick="setBrightMode('manual',this)">Manual</button>
+<button class="chip-btn" data-brightmode="auto" onclick="setBrightMode('auto',this)">Auto (Lux)</button>
+</div>
+<div class="flex justify-between items-baseline mt-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Brightness</span>
+<span class="font-label-md text-label-md text-primary" id="brightVal">50%</span>
+</div>
+<input type="range" class="vega-range" id="brightSlider" min="0" max="100" value="50" step="1" oninput="onBrightInput(this.value)" onchange="sendBright(this.value)">
+<p class="font-body-md text-[12px] text-on-surface-variant m-0">In Auto mode, brightness follows the pole's RS485 ambient light sensor — dimmer in daylight, brighter at night. The slider is ignored until you switch back to Manual.</p>
+</div>
+
+<!-- Fogging Pump -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col gap-3">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-1">Fogging Pump</div>
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface">Relay State</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-bright text-on-surface" id="fogPumpState">Unknown</span>
+</div>
+<div class="flex bg-surface rounded border border-outline-variant p-0.5" id="fogPumpButtons">
+<button class="flex-1 px-3 py-2 font-label-sm text-label-sm rounded text-on-surface-variant hover:text-on-surface" data-fog="on" onclick="setFogPump('on',this)">ON</button>
+<button class="flex-1 px-3 py-2 font-label-sm text-label-sm rounded text-on-surface-variant hover:text-on-surface" data-fog="auto" onclick="setFogPump('auto',this)">AUTO</button>
+<button class="flex-1 px-3 py-2 font-label-sm text-label-sm rounded bg-surface-bright text-on-surface" data-fog="off" onclick="setFogPump('off',this)">OFF</button>
+</div>
+<p class="font-body-md text-[12px] text-on-surface-variant m-0">AUTO fogs when pole temperature crosses the ESP32's high-temp threshold, and stops once it cools back down (relay lives on the ESP32 board, not the Aries).</p>
+</div>
+</div>
+
 <!-- Sensor History -->
 <div class="glass-panel p-card-padding rounded-lg">
 <div class="flex items-center justify-between mb-3">
@@ -760,12 +802,32 @@ function flashValue(id, newVal) {
 }
 
 function updateSensors(msg) {
-  flashValue('liveTemp', msg.temp);
-  flashValue('liveHum', msg.hum);
-  flashValue('liveSoil', msg.soil);
-  flashValue('liveCurrent', typeof msg.current !== 'undefined' ? Number(msg.current).toFixed(3) : '--');
+  // -1 (or a missing field) means "no reading" for every field in the
+  // firmware's <SENSOR,...> convention — route all of them through
+  // fmtOrDash so a failed read shows "--" instead of a literal "-1".
+  flashValue('liveTemp', fmtOrDash(msg.temp));
+  flashValue('liveHum', fmtOrDash(msg.hum));
+  flashValue('liveSoil', fmtOrDash(msg.soil));
+  // Load Current and Ambient Noise are intentionally not wired up right
+  // now (ACS756 has been removed from the firmware entirely — DC-only
+  // deployment) — their cards stay at the static "--" already in the
+  // markup.
+
+  flashValue('liveLux', fmtOrDash(msg.lux));
+  flashValue('livePm25', fmtOrDash(msg.pm25)); // -1 from firmware = "no AQI sensor wired yet"
+  flashValue('livePm10', fmtOrDash(msg.pm10));
+
   recordHistory(msg.temp, msg.hum, msg.soil);
-  recordCurrentHistory(msg.current);
+  syncBrightnessUI(msg.bright, msg.autobright);
+  syncFogPumpUI(msg.pump);
+}
+
+// Shared "-1 (or missing) means no data" convention the firmware uses
+// throughout its <SENSOR,...> broadcast.
+function fmtOrDash(v) {
+  const n = parseFloat(v);
+  if (typeof v === 'undefined' || isNaN(n) || n < 0) return '--';
+  return n;
 }
 
 // ---------- Display mode (Off/Scroll/Flag/EQ/Solid/Festival/Figures/Temp-Hum/Soil) ----------
@@ -862,6 +924,67 @@ function selectFestival(fest, btn) {
   document.querySelectorAll('#festivalButtons .mode-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   sendCmd('FESTIVAL:' + fest);
+}
+
+// ---------- Streetlight brightness (PWM1) ----------
+let brightIsAuto = false;
+let brightSliderDragging = false; // don't let an incoming state message yank the slider mid-drag
+
+function setBrightMode(mode, btn) {
+  document.querySelectorAll('#brightModeButtons .chip-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  brightIsAuto = (mode === 'auto');
+  document.getElementById('brightSlider').disabled = brightIsAuto;
+  sendCmd('AUTOBRIGHT:' + (brightIsAuto ? '1' : '0'));
+}
+function onBrightInput(val) {
+  brightSliderDragging = true;
+  document.getElementById('brightVal').textContent = val + '%';
+}
+function sendBright(val) {
+  brightSliderDragging = false;
+  document.getElementById('brightVal').textContent = val + '%';
+  sendCmd('BRIGHT:' + val);
+}
+// Reflects the firmware's actual state (from the periodic <SENSOR,...>
+// broadcast) back into the UI — e.g. after a page reload, or if brightness
+// was changed from elsewhere. Skips the slider position while the user
+// is actively dragging it.
+function syncBrightnessUI(bright, autobright) {
+  if (typeof bright === 'undefined') return;
+  const isAuto = String(autobright) === '1';
+  brightIsAuto = isAuto;
+  document.querySelectorAll('#brightModeButtons .chip-btn').forEach(b => {
+    b.classList.toggle('active', (b.dataset.brightmode === 'auto') === isAuto);
+  });
+  document.getElementById('brightSlider').disabled = isAuto;
+  if (!brightSliderDragging) {
+    document.getElementById('brightSlider').value = bright;
+    document.getElementById('brightVal').textContent = bright + '%';
+  }
+}
+
+// ---------- Fogging pump (ESP32 relay) ----------
+function setFogPump(which, btn) {
+  document.querySelectorAll('#fogPumpButtons [data-fog]').forEach(b => {
+    b.classList.remove('bg-primary-container', 'text-on-primary-container', 'bg-surface-bright');
+    b.classList.add('text-on-surface-variant');
+  });
+  btn.classList.remove('text-on-surface-variant');
+  btn.classList.add(which === 'off' ? 'bg-surface-bright' : 'bg-primary-container', which === 'off' ? 'text-on-surface' : 'text-on-primary-container');
+  sendCmd('PUMP:' + which.toUpperCase());
+}
+// Reflects the ESP32's actual relay state (relayed through the Aries's
+// broadcast as "PUMP:0"/"PUMP:1") back into the status chip.
+function syncFogPumpUI(pump) {
+  const el = document.getElementById('fogPumpState');
+  if (!el || typeof pump === 'undefined') return;
+  const on = String(pump) === '1';
+  el.textContent = on ? 'ON' : 'OFF';
+  el.classList.toggle('bg-tertiary/10', on);
+  el.classList.toggle('text-tertiary', on);
+  el.classList.toggle('bg-surface-bright', !on);
+  el.classList.toggle('text-on-surface', !on);
 }
 
 // ---------- Sensor history chart ----------
