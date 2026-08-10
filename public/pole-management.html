@@ -331,6 +331,20 @@
 <span class="font-label-md text-label-md text-on-surface-variant">%</span>
 </div>
 </div>
+<!-- Rainfall — no rain gauge wired to the firmware yet; card kept as a
+     placeholder for when the sensor is added to the hardware. Once the
+     firmware starts broadcasting a `rain` field on <SENSOR,...>, remove
+     `opacity-60` and this comment — updateSensors() already reads it. -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 opacity-60">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">rainy</span>
+<span class="font-label-md text-label-md">Rainfall</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface" id="liveRain">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">mm</span>
+</div>
+</div>
 <!-- Load Current (ACS756) — sensor removed from firmware (DC-only
      deployment); card kept as a placeholder in case AC current
      sensing is added back later. Delete this block if not needed. -->
@@ -816,6 +830,7 @@ function updateSensors(msg) {
   flashValue('liveLux', fmtOrDash(msg.lux));
   flashValue('livePm25', fmtOrDash(msg.pm25)); // -1 from firmware = "no AQI sensor wired yet"
   flashValue('livePm10', fmtOrDash(msg.pm10));
+  flashValue('liveRain', fmtOrDash(msg.rain)); // no rain gauge on the hardware yet — firmware doesn't send `rain`, so this stays "--" until it does
 
   recordHistory(msg.temp, msg.hum, msg.soil);
   syncBrightnessUI(msg.bright, msg.autobright);
