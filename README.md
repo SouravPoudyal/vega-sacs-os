@@ -37,18 +37,43 @@ Uno pinout) is the sensor and display hub:
   bit-banged WS2812B sender: pin `HIGH`/`LOW` timed with `NOP` spin-loops
   tuned for a 100MHz core, with interrupts disabled for the duration of
   each `show()` call so the strict WS2812B timing isn't preempted.
-- **SHT21** temperature/humidity sensor — I2C (shares the `SDA`/`SCL` bus
-  with the OLED).
-- **Capacitive soil moisture sensor** (analog) on `A0` — calibrated
-  per-unit against dry-air and fully-submerged ADC readings.
+- **SHT21** temperature/humidity sensor — I2C, on its own dedicated bus
+  (`SDA1`/`SCL1`), separate from the OLED's `SDA0`/`SCL0` bus. Replaces an
+  earlier DHT11.
+- **Capacitive soil moisture sensor** (SKU130230, analog) on `A0` —
+  calibrated per-unit against dry-air and fully-submerged ADC readings.
+- **Nova SDS011** laser PM2.5/PM10 sensor — UART (`TX2`/`RX2`, 9600 8N1),
+  queried every ~3s. Reports `-1` (rendered as `--`) until the first good
+  frame arrives (e.g. still warming up).
 - **SSD1306 128×64 I2C OLED** for local status (boot messages, current
   mode) — compiled out with a single `#define` if it doesn't build
   against a given core.
 
+> An ACS756 AC current sensor was previously wired to the Aries board;
+> it's been removed since this deployment is DC-only.
+
 **ESP32** is the Wi-Fi bridge — it doesn't run its own hotspot/web server
 (an earlier revision did); instead it joins your existing Wi-Fi as a
 client and holds one outbound WebSocket connection to the relay server
-described below, forwarding whatever passes each direction over UART.
+described below, forwarding whatever passes each direction over UART. It
+also owns two pieces of hardware that aren't on the Aries board at all:
+
+- **RS485 ambient light sensor** (Modbus-RTU, e.g. DFRobot SEN0644-family,
+  0.001–200,000 lux) — wired through a MAX485-style adapter to the ESP32's
+  second hardware UART, polled every 3s via the `ModbusMaster` library.
+  Its reading is sent back down to the Aries (`LUX:<value>`), which folds
+  it into the same `<SENSOR,...>` broadcast as everything else.
+- **Fogging pump relay** on a dedicated GPIO — switched directly by the
+  ESP32, not the Aries. `PUMP:ON` / `PUMP:OFF` / `PUMP:AUTO` commands from
+  the dashboard are intercepted here rather than forwarded on; in AUTO the
+  ESP32 watches the SHT21 temperature as it passes through on its way to
+  the dashboard and switches the relay itself once it crosses a
+  configured high/low threshold (with a minimum on/off time so it doesn't
+  rapid-cycle).
+
+> A PZEM-004T AC energy meter was previously wired to the ESP32; it's
+> been removed for the same DC-only reason as the ACS756 above. That
+> freed up the hardware UART now used for the RS485 lux sensor.
 
 **Wiring** between the two boards, on a UART separate from Serial/USB
 (mixing them was the root cause of an earlier "no sensor data" bug, since
@@ -63,10 +88,20 @@ UART-0 on the Aries is permanently shared with its USB programming chip):
 115200 baud. `TX1`/`RX1` are a separate labeled header from `D0`/`D1` —
 check your board's silkscreen.
 
+The RS485 lux sensor and fogging relay wire directly to the ESP32, not the
+Aries:
+
+| Signal | ESP32 pin |
+|---|---|
+| RS485 adapter RO (receive) | `GPIO27` |
+| RS485 adapter DI (transmit) | `GPIO26` |
+| RS485 adapter DE+RE (direction, tied together) | `GPIO18` |
+| Fogging relay IN | `GPIO23` |
+
 **Arduino libraries needed** for the Aries sketch: Adafruit GFX Library,
-Adafruit SSD1306, an SHT21 I2C library (e.g. Rob Tillaart's SHT2x). For
-the ESP32 sketch: WebSockets
-(by Markus Sattler / Links2004).
+Adafruit SSD1306, an SHT21 I2C library (e.g. Soldered Electronics' SHT21).
+For the ESP32 sketch: WebSockets (by Markus Sattler / Links2004) and
+ModbusMaster (by Doc Walker, for the RS485 lux sensor).
 
 **A known toolchain gotcha:** the VEGA RISC-V Arduino core (v1.1.2) defines
 `map()` in two different translation units, so any sketch that calls
@@ -83,8 +118,11 @@ a hosted WebSocket relay:
 Browser  <--WebSocket-->  Node relay server (Render.com)  <--WebSocket-->  ESP32  <--UART-->  Aries V3 + LED matrix + sensors
 ```
 
-- **Live Telemetry** — real-time temperature, humidity, and soil moisture,
-  pushed the instant a new reading arrives (no polling).
+- **Live Telemetry** — real-time temperature, humidity, soil moisture,
+  ambient light level (lux), and air quality (PM2.5/PM10), each pushed the
+  instant a new reading arrives (no polling). A field showing `--` means
+  that specific sensor hasn't reported a valid reading yet (or is still
+  warming up), not that the card is a placeholder.
 - **Display Mode** — Off · Scroll · Flag · EQ · Solid · Festival · Figures ·
   Temp/Hum · Soil, all applied the moment you tap a mode.
 - **Scrolling Text** — three custom words, adjustable scroll speed
@@ -93,15 +131,22 @@ Browser  <--WebSocket-->  Node relay server (Render.com)  <--WebSocket-->  ESP32
 - **Figures** — Star, Heart, Diamond, Smiley, Tree, drawn procedurally on
   the matrix, in animated or static mode.
 - **Festival Lights** — Confetti, Rainbow, Comet, Twinkle patterns.
+- **Fogging Pump** — ON / AUTO / OFF, switched by a relay on the ESP32
+  (not the Aries). AUTO ties it to the live temperature reading, fogging
+  above a high threshold and stopping once it cools back below a lower
+  one.
 - **Sensor History** — a rolling in-memory chart of the last ~120 readings.
 - **Dual-Mode Lighting** and **Component Power Control** quick-toggles at
   the top of the page mirror/drive the same state as the full control panel
   below them.
 
-The AQI, Ambient Noise, Light Level, Power Profile/Battery, Env. Sensors,
-Irrigation Pump, and Fault Log widgets on this page are still static
-placeholders — they'll come online the same way Pole Management did, once
-that hardware exists.
+Load Current, Ambient Noise, Power Profile/Battery, Env. Sensors, Wind
+Speed/Direction, Rainfall, Irrigation Pump, and Fault Log on this page are
+still static placeholders (some visually dimmed to make that explicit) —
+they'll come online the same way the rest of Pole Management did, once
+that hardware exists. Load Current specifically used to work (an ACS756
+sensor) but was removed when the deployment went DC-only; the card is
+kept in case AC sensing comes back.
 
 ## Pages
 
@@ -126,17 +171,21 @@ when you click between tabs, for the reason covered in
 ## How it's wired together
 
 - The **Aries V3** board (see [Hardware](#hardware) above for the full
-  pinout) drives the LED matrix, reads the temp/humidity and soil sensors,
-  and talks to the ESP32 over UART-1 — `0`–`8` mode select, `SPEED:`,
-  `COLOR:`, `FIGURE:`, `FIGUREMODE:`, `FESTIVAL:`, `TEXTSIZE:`, and
-  free-text words for the scrolling display.
-- The **ESP32** joins your Wi-Fi as a client (not its own access point) and
-  opens a WebSocket connection out to the relay server.
+  pinout) drives the LED matrix, reads the temp/humidity, soil, and PM2.5/
+  PM10 sensors, and talks to the ESP32 over UART-1 — `0`–`8` mode select,
+  `SPEED:`, `COLOR:`, `FIGURE:`, `FIGUREMODE:`, `FESTIVAL:`, `TEXTSIZE:`,
+  and free-text words for the scrolling display.
+- The **ESP32** joins your Wi-Fi as a client (not its own access point),
+  reads the RS485 lux sensor, drives the fogging relay, and opens a
+  WebSocket connection out to the relay server. It also folds its own lux
+  reading back into the frame it forwards, and intercepts `PUMP:*`
+  commands rather than passing them through to the Aries.
 - The **Node relay server** (`server.js`, hosted free on Render.com) is the
   only thing both the ESP32 and any browser connect to. It:
   - accepts two kinds of WebSocket client on `/ws`, told apart by
     `?role=device` (the ESP32) or `?role=dashboard` (a browser),
-  - parses the Aries sensor frame (`SENSOR,TEMP:24.0,HUM:55,SOIL:42`) and
+  - parses the Aries sensor frame (`SENSOR,TEMP:24.0,HUM:55,SOIL:42,
+    LUX:120.5,BRIGHT:50,AUTOBRIGHT:0,PUMP:0,PM25:-1,PM10:-1`) and
     rebroadcasts it as JSON (`{"type":"sensor","temp":"24.0",...}`) to every
     connected dashboard,
   - forwards any `{"cmd":"..."}` a dashboard sends straight to every
@@ -214,8 +263,10 @@ npm start
 ```
 
 Simulate the ESP32 without hardware by connecting a WebSocket client to
-`ws://localhost:3000/ws?role=device` and sending
-`SENSOR,TEMP:24.0,HUM:55,SOIL:42`.
+`ws://localhost:3000/ws?role=device` and sending a sensor frame, e.g.
+`SENSOR,TEMP:24.0,HUM:55,SOIL:42,LUX:120.5,BRIGHT:50,AUTOBRIGHT:0,PUMP:0,
+PM25:12,PM10:20`. Only `TEMP`, `HUM`, and `SOIL` are required by the
+server's parser — the rest default to `--`/`0` if omitted.
 
 ## Troubleshooting
 
