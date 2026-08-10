@@ -1,107 +1,134 @@
-<svg viewBox="0 0 1500 640" xmlns="http://www.w3.org/2000/svg" font-family="Inter, -apple-system, Segoe UI, sans-serif">
+<svg viewBox="0 0 1500 760" xmlns="http://www.w3.org/2000/svg" font-family="Inter, -apple-system, Segoe UI, sans-serif">
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L9,3 z" fill="#4cd7f6"/>
     </marker>
   </defs>
 
-  <rect x="0" y="0" width="1500" height="640" fill="#0b1326"/>
+  <rect x="0" y="0" width="1500" height="760" fill="#0b1326"/>
 
   <text x="750" y="42" text-anchor="middle" fill="#dae2fd" font-size="22" font-weight="700">VEGA Smart City Pole — Hardware &amp; Data Flow</text>
-  <text x="750" y="66" text-anchor="middle" fill="#8693a3" font-size="13">Aries V3 (VEGA RISC-V) sensor/display hub → ESP32 Wi-Fi bridge → Node relay → browser dashboard</text>
+  <text x="750" y="66" text-anchor="middle" fill="#8693a3" font-size="13">Aries V3 (VEGA RISC-V) sensor/display hub → ESP32 Wi-Fi bridge + lux/fog → Node relay → browser dashboard</text>
 
   <!-- BOX 1: Aries V3 -->
-  <rect x="40" y="110" width="330" height="430" rx="10" fill="#151d33" stroke="#3d494c" stroke-width="1.5"/>
-  <text x="205" y="140" text-anchor="middle" fill="#4cd7f6" font-size="15" font-weight="700">C-DAC Aries V3</text>
-  <text x="205" y="158" text-anchor="middle" fill="#8693a3" font-size="11">THEJAS32 / VEGA ET1031 (RISC-V), Arduino-Uno pinout</text>
+  <rect x="40" y="100" width="330" height="590" rx="10" fill="#151d33" stroke="#3d494c" stroke-width="1.5"/>
+  <text x="205" y="130" text-anchor="middle" fill="#4cd7f6" font-size="15" font-weight="700">C-DAC Aries V3</text>
+  <text x="205" y="148" text-anchor="middle" fill="#8693a3" font-size="11">THEJAS32 / VEGA ET1031 (RISC-V), Arduino-Uno pinout</text>
 
   <!-- sub-items inside Aries box -->
   <g font-size="12" fill="#dae2fd">
-    <rect x="60" y="178" width="290" height="58" rx="6" fill="#0b1326" stroke="#31394d"/>
-    <text x="75" y="198" font-weight="600" fill="#ffb95f">WS2812B LED Matrix</text>
-    <text x="75" y="215" fill="#8693a3">3× 8×32 panels → 24×32 (768 px), pin D5</text>
-    <text x="75" y="230" fill="#8693a3">Driven by custom bit-banged VegaPixel.h</text>
+    <rect x="60" y="166" width="290" height="56" rx="6" fill="#0b1326" stroke="#31394d"/>
+    <text x="75" y="185" font-weight="600" fill="#ffb95f">WS2812B LED Matrix</text>
+    <text x="75" y="201" fill="#8693a3">3× 8×32 panels → 24×32 (768 px), pin D5</text>
+    <text x="75" y="215" fill="#8693a3">Driven by custom bit-banged VegaPixel.h</text>
 
-    <rect x="60" y="246" width="290" height="42" rx="6" fill="#0b1326" stroke="#31394d"/>
-    <text x="75" y="266" font-weight="600" fill="#4edea3">SHT21</text>
-    <text x="75" y="281" fill="#8693a3">Temperature + humidity, I2C (shares SDA/SCL)</text>
+    <rect x="60" y="232" width="290" height="40" rx="6" fill="#0b1326" stroke="#31394d"/>
+    <text x="75" y="251" font-weight="600" fill="#4edea3">SHT21</text>
+    <text x="75" y="265" fill="#8693a3">Temperature + humidity, I2C (own bus SDA1/SCL1)</text>
 
-    <rect x="60" y="298" width="290" height="42" rx="6" fill="#0b1326" stroke="#31394d"/>
-    <text x="75" y="318" font-weight="600" fill="#4edea3">Capacitive Soil Sensor</text>
-    <text x="75" y="333" fill="#8693a3">Analog, pin A0 (calibrated per-sensor)</text>
+    <rect x="60" y="282" width="290" height="40" rx="6" fill="#0b1326" stroke="#31394d"/>
+    <text x="75" y="301" font-weight="600" fill="#4edea3">Capacitive Soil Sensor</text>
+    <text x="75" y="315" fill="#8693a3">Analog, pin A0 (calibrated per-sensor)</text>
 
-    <rect x="60" y="350" width="290" height="42" rx="6" fill="#0b1326" stroke="#31394d"/>
-    <text x="75" y="370" font-weight="600" fill="#8693a3">SSD1306 OLED (128×64)</text>
-    <text x="75" y="385" fill="#8693a3">Status display, I2C (SDA/SCL)</text>
+    <rect x="60" y="332" width="290" height="56" rx="6" fill="#0b1326" stroke="#31394d"/>
+    <text x="75" y="351" font-weight="600" fill="#4edea3">Nova SDS011</text>
+    <text x="75" y="366" fill="#8693a3">Laser PM2.5/PM10, UART (TX2/RX2, 9600 8N1)</text>
+    <text x="75" y="380" fill="#8693a3">Queried ~3s — "--" until first good frame</text>
+
+    <rect x="60" y="398" width="290" height="40" rx="6" fill="#0b1326" stroke="#31394d"/>
+    <text x="75" y="417" font-weight="600" fill="#8693a3">SSD1306 OLED (128×64)</text>
+    <text x="75" y="431" fill="#8693a3">Status display, I2C (own bus SDA0/SCL0)</text>
   </g>
 
-  <text x="205" y="415" text-anchor="middle" fill="#dae2fd" font-size="12" font-weight="600">Modes 0–8, over UART-1</text>
-  <text x="205" y="432" text-anchor="middle" fill="#8693a3" font-size="10">Off · Scroll · Flag · EQ · Solid · Festival</text>
-  <text x="205" y="447" text-anchor="middle" fill="#8693a3" font-size="10">Figures · Temp/Hum · Soil</text>
+  <text x="205" y="462" text-anchor="middle" fill="#dae2fd" font-size="12" font-weight="600">Modes 0–8, over UART-1</text>
+  <text x="205" y="479" text-anchor="middle" fill="#8693a3" font-size="10">Off · Scroll · Flag · EQ · Solid · Festival</text>
+  <text x="205" y="494" text-anchor="middle" fill="#8693a3" font-size="10">Figures · Temp/Hum · Soil</text>
 
-  <rect x="60" y="465" width="290" height="58" rx="6" fill="#1f1408" stroke="#5b3800"/>
-  <text x="75" y="484" font-weight="600" fill="#ffb95f" font-size="11">⚠ UART-1, not UART-0/Serial</text>
-  <text x="75" y="500" fill="#8693a3" font-size="10">UART-0 is shared with the USB programmer —</text>
-  <text x="75" y="513" fill="#8693a3" font-size="10">using it for ESP32 caused earlier "no data" bugs.</text>
+  <rect x="60" y="512" width="290" height="50" rx="6" fill="#0d1f18" stroke="#005236"/>
+  <text x="75" y="530" font-weight="600" fill="#4edea3" font-size="11">Removed: ACS756 current sensor</text>
+  <text x="75" y="545" fill="#8693a3" font-size="10">DC-only deployment — AC sensing not needed; A1 free.</text>
+
+  <rect x="60" y="572" width="290" height="58" rx="6" fill="#1f1408" stroke="#5b3800"/>
+  <text x="75" y="591" font-weight="600" fill="#ffb95f" font-size="11">⚠ UART-1, not UART-0/Serial</text>
+  <text x="75" y="607" fill="#8693a3" font-size="10">UART-0 is shared with the USB programmer —</text>
+  <text x="75" y="620" fill="#8693a3" font-size="10">using it for ESP32 caused earlier "no data" bugs.</text>
 
   <!-- arrow 1 -->
-  <line x1="370" y1="325" x2="450" y2="325" stroke="#4cd7f6" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="410" y="300" text-anchor="middle" fill="#4cd7f6" font-size="10" font-weight="600">UART-1</text>
-  <text x="410" y="313" text-anchor="middle" fill="#8693a3" font-size="9">115200 baud</text>
-  <text x="410" y="342" text-anchor="middle" fill="#8693a3" font-size="8">TX1→27</text>
-  <text x="410" y="353" text-anchor="middle" fill="#8693a3" font-size="8">RX1→26</text>
+  <line x1="370" y1="360" x2="450" y2="360" stroke="#4cd7f6" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="410" y="335" text-anchor="middle" fill="#4cd7f6" font-size="10" font-weight="600">UART-1</text>
+  <text x="410" y="348" text-anchor="middle" fill="#8693a3" font-size="9">115200 baud</text>
+  <text x="410" y="377" text-anchor="middle" fill="#8693a3" font-size="8">TX1→27</text>
+  <text x="410" y="388" text-anchor="middle" fill="#8693a3" font-size="8">RX1→26</text>
 
   <!-- BOX 2: ESP32 -->
-  <rect x="450" y="230" width="260" height="190" rx="10" fill="#151d33" stroke="#3d494c" stroke-width="1.5"/>
-  <text x="580" y="262" text-anchor="middle" fill="#4cd7f6" font-size="15" font-weight="700">ESP32</text>
-  <text x="580" y="280" text-anchor="middle" fill="#8693a3" font-size="11">Wi-Fi client (STA mode)</text>
+  <rect x="450" y="180" width="270" height="360" rx="10" fill="#151d33" stroke="#3d494c" stroke-width="1.5"/>
+  <text x="585" y="210" text-anchor="middle" fill="#4cd7f6" font-size="15" font-weight="700">ESP32</text>
+  <text x="585" y="228" text-anchor="middle" fill="#8693a3" font-size="11">Wi-Fi client (STA mode)</text>
 
   <g font-size="11" fill="#8693a3">
-    <text x="580" y="308" text-anchor="middle">WebSocketsClient library</text>
-    <text x="580" y="326" text-anchor="middle">(Links2004/arduinoWebSockets)</text>
-    <text x="580" y="352" text-anchor="middle" fill="#dae2fd" font-weight="600">Forwards commands ↓ verbatim</text>
-    <text x="580" y="368" text-anchor="middle" fill="#dae2fd" font-weight="600">Relays "&lt;SENSOR,...&gt;" frames ↑</text>
-    <text x="580" y="398" text-anchor="middle" font-size="9">auto-reconnect every 3s if the</text>
-    <text x="580" y="410" text-anchor="middle" font-size="9">relay server sleeps/restarts</text>
+    <text x="585" y="254" text-anchor="middle">WebSocketsClient + ModbusMaster</text>
+    <text x="585" y="269" text-anchor="middle" fill="#dae2fd" font-weight="600">Forwards commands ↓ verbatim</text>
+    <text x="585" y="284" text-anchor="middle" fill="#dae2fd" font-weight="600">Relays "&lt;SENSOR,...&gt;" frames ↑</text>
   </g>
 
+  <rect x="470" y="296" width="230" height="54" rx="6" fill="#0b1326" stroke="#31394d"/>
+  <text x="585" y="315" text-anchor="middle" font-weight="600" fill="#4cd7f6" font-size="11">RS485 Ambient Light Sensor</text>
+  <text x="585" y="330" text-anchor="middle" fill="#8693a3" font-size="9.5">Modbus-RTU, UART2, polled 3s</text>
+  <text x="585" y="343" text-anchor="middle" fill="#8693a3" font-size="9.5">Reading folds into Aries' LUX: field</text>
+
+  <rect x="470" y="358" width="230" height="54" rx="6" fill="#0b1326" stroke="#31394d"/>
+  <text x="585" y="377" text-anchor="middle" font-weight="600" fill="#ffb95f" font-size="11">Fogging Pump Relay</text>
+  <text x="585" y="392" text-anchor="middle" fill="#8693a3" font-size="9.5">Dedicated GPIO, switched by ESP32</text>
+  <text x="585" y="405" text-anchor="middle" fill="#8693a3" font-size="9.5">PUMP:ON/OFF/AUTO intercepted here</text>
+
+  <text x="585" y="432" text-anchor="middle" fill="#8693a3" font-size="9">auto-reconnect every 3s if the</text>
+  <text x="585" y="445" text-anchor="middle" fill="#8693a3" font-size="9">relay server sleeps/restarts</text>
+
+  <rect x="470" y="458" width="230" height="52" rx="6" fill="#1f1408" stroke="#5b3800"/>
+  <text x="585" y="476" text-anchor="middle" font-weight="600" fill="#ffb95f" font-size="10.5">Removed: PZEM-004T AC meter</text>
+  <text x="585" y="491" text-anchor="middle" fill="#8693a3" font-size="9.5">DC-only — freed the UART now used</text>
+  <text x="585" y="503" text-anchor="middle" fill="#8693a3" font-size="9.5">for the RS485 lux sensor above.</text>
+
   <!-- arrow 2 -->
-  <line x1="710" y1="325" x2="800" y2="325" stroke="#4cd7f6" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="755" y="300" text-anchor="middle" fill="#4cd7f6" font-size="10" font-weight="600">wss://</text>
-  <text x="755" y="313" text-anchor="middle" fill="#8693a3" font-size="9">role=device</text>
-  <text x="755" y="345" text-anchor="middle" fill="#8693a3" font-size="9">&amp;token=...</text>
+  <line x1="720" y1="360" x2="800" y2="360" stroke="#4cd7f6" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="760" y="335" text-anchor="middle" fill="#4cd7f6" font-size="10" font-weight="600">wss://</text>
+  <text x="760" y="348" text-anchor="middle" fill="#8693a3" font-size="9">role=device</text>
+  <text x="760" y="380" text-anchor="middle" fill="#8693a3" font-size="9">&amp;token=...</text>
 
   <!-- BOX 3: Relay server -->
-  <rect x="800" y="230" width="280" height="190" rx="10" fill="#151d33" stroke="#3d494c" stroke-width="1.5"/>
+  <rect x="800" y="230" width="280" height="260" rx="10" fill="#151d33" stroke="#3d494c" stroke-width="1.5"/>
   <text x="940" y="262" text-anchor="middle" fill="#4cd7f6" font-size="15" font-weight="700">Node.js Relay</text>
   <text x="940" y="280" text-anchor="middle" fill="#8693a3" font-size="11">server.js — hosted on Render.com</text>
 
   <g font-size="11" fill="#8693a3">
-    <text x="940" y="308" text-anchor="middle">Parses SENSOR,TEMP/HUM/SOIL</text>
-    <text x="940" y="324" text-anchor="middle">→ rebroadcasts as JSON</text>
-    <text x="940" y="352" text-anchor="middle" fill="#dae2fd" font-weight="600">The only thing device &amp;</text>
-    <text x="940" y="368" text-anchor="middle" fill="#dae2fd" font-weight="600">dashboard both connect to</text>
-    <text x="940" y="398" text-anchor="middle" font-size="9">optional AUTH_TOKEN shared secret</text>
+    <text x="940" y="308" text-anchor="middle">Parses SENSOR,TEMP/HUM/SOIL/</text>
+    <text x="940" y="324" text-anchor="middle">LUX/PM25/PM10/PUMP/BRIGHT</text>
+    <text x="940" y="340" text-anchor="middle">→ rebroadcasts as JSON</text>
+    <text x="940" y="368" text-anchor="middle" fill="#dae2fd" font-weight="600">The only thing device &amp;</text>
+    <text x="940" y="384" text-anchor="middle" fill="#dae2fd" font-weight="600">dashboard both connect to</text>
+    <text x="940" y="414" text-anchor="middle" font-size="9">optional AUTH_TOKEN shared secret</text>
   </g>
 
   <!-- arrow 3 -->
-  <line x1="1080" y1="325" x2="1170" y2="325" stroke="#4cd7f6" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="1125" y="300" text-anchor="middle" fill="#4cd7f6" font-size="10" font-weight="600">wss://</text>
-  <text x="1125" y="313" text-anchor="middle" fill="#8693a3" font-size="9">role=dashboard</text>
-  <text x="1125" y="345" text-anchor="middle" fill="#8693a3" font-size="9">&amp;token=...</text>
+  <line x1="1080" y1="360" x2="1170" y2="360" stroke="#4cd7f6" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="1125" y="335" text-anchor="middle" fill="#4cd7f6" font-size="10" font-weight="600">wss://</text>
+  <text x="1125" y="348" text-anchor="middle" fill="#8693a3" font-size="9">role=dashboard</text>
+  <text x="1125" y="380" text-anchor="middle" fill="#8693a3" font-size="9">&amp;token=...</text>
 
   <!-- BOX 4: Browser -->
-  <rect x="1170" y="230" width="290" height="190" rx="10" fill="#151d33" stroke="#3d494c" stroke-width="1.5"/>
+  <rect x="1170" y="230" width="290" height="260" rx="10" fill="#151d33" stroke="#3d494c" stroke-width="1.5"/>
   <text x="1315" y="262" text-anchor="middle" fill="#4cd7f6" font-size="15" font-weight="700">Browser</text>
   <text x="1315" y="280" text-anchor="middle" fill="#8693a3" font-size="11">VEGA SACS OS — Pole Management</text>
 
   <g font-size="11" fill="#8693a3">
-    <text x="1315" y="308" text-anchor="middle">Live Temp / Humidity / Soil cards</text>
-    <text x="1315" y="324" text-anchor="middle">Display mode, text, color,</text>
-    <text x="1315" y="340" text-anchor="middle">figures, festival controls</text>
-    <text x="1315" y="368" text-anchor="middle" fill="#dae2fd" font-weight="600">Any browser, anywhere —</text>
-    <text x="1315" y="384" text-anchor="middle" fill="#dae2fd" font-weight="600">not just the ESP32's own hotspot</text>
+    <text x="1315" y="308" text-anchor="middle">Live Temp / Humidity / Soil /</text>
+    <text x="1315" y="324" text-anchor="middle">Lux / PM2.5 / PM10 cards</text>
+    <text x="1315" y="340" text-anchor="middle">Display mode, text, color,</text>
+    <text x="1315" y="356" text-anchor="middle">figures, festival &amp; fog pump controls</text>
+    <text x="1315" y="384" text-anchor="middle" fill="#dae2fd" font-weight="600">Any browser, anywhere —</text>
+    <text x="1315" y="400" text-anchor="middle" fill="#dae2fd" font-weight="600">not just the ESP32's own hotspot</text>
   </g>
 
-  <text x="750" y="600" text-anchor="middle" fill="#4a5568" font-size="11">One pole shown — Fleet Overview aggregates multiple Aries+ESP32 poles through the same relay.</text>
+  <text x="750" y="720" text-anchor="middle" fill="#4a5568" font-size="11">One pole shown — Fleet Overview aggregates multiple Aries+ESP32 poles through the same relay.</text>
+  <text x="750" y="740" text-anchor="middle" fill="#4a5568" font-size="10">Rainfall, wind, noise, and load-current sensors are UI placeholders — not present on this hardware yet.</text>
 </svg>
