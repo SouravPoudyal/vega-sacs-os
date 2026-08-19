@@ -12,10 +12,13 @@
 
    Flow:
      Aries --(UART, "<SENSOR,TEMP:24.0,HUM:55,SOIL:42,LUX:120.5,
-                      BRIGHT:50,AUTOBRIGHT:0,PUMP:0,PM25:-1,PM10:-1>")--> ESP32
+                      BRIGHT:50,AUTOBRIGHT:0,PUMP:0,PM25:-1,PM10:-1,
+                      SOILM:41.2,SOILT:23.4,SOILPH:6.51,SOILEC:37,
+                      SOILN:2,SOILP:3,SOILK:7>")--> ESP32
      ESP32 --(WebSocket text: same "SENSOR,..." string)--> here
      here --(broadcast JSON {type:"sensor",temp,hum,soil,lux,bright,
-                              autobright,pump,pm25,pm10})--> dashboards
+                              autobright,pump,pm25,pm10,soilm,soilt,
+                              soilph,soilec,soiln,soilp,soilk})--> dashboards
 
      dashboard --(WebSocket JSON {cmd:"..."})--> here
      here --(forward raw cmd string)--> ESP32
@@ -53,6 +56,14 @@ let lastSensor = {
   temp: '--', hum: '--', soil: '--',
   lux: '--', bright: '--', autobright: '0',
   pump: '0', pm25: '--', pm10: '--',
+  // RS485 JXBS-3001-TR soil probe (ESP32 UART2 -> Aries "SOILDATA:..." ->
+  // Aries's SENSOR broadcast). '--' here just means "no field seen in
+  // any SENSOR frame yet" — same as every other field's default below.
+  // A present-but-failed reading arrives as the literal string "-1"
+  // (the firmware's convention), same as temp/hum/soil already do;
+  // the dashboard's fmtOrDash() is what turns that into "--" for display.
+  soilm: '--', soilt: '--', soilph: '--', soilec: '--',
+  soiln: '--', soilp: '--', soilk: '--',
 };
 
 const devices = new Set();
@@ -60,7 +71,8 @@ const dashboards = new Set();
 
 function parseSensorFrame(frame) {
   // Expected: "SENSOR,TEMP:24.0,HUM:55,SOIL:42,LUX:120.5,BRIGHT:50,
-  //            AUTOBRIGHT:0,PUMP:0,PM25:-1,PM10:-1"
+  //            AUTOBRIGHT:0,PUMP:0,PM25:-1,PM10:-1,SOILM:41.2,
+  //            SOILT:23.4,SOILPH:6.51,SOILEC:37,SOILN:2,SOILP:3,SOILK:7"
   if (!frame.startsWith('SENSOR')) return null;
   const t   = frame.match(/TEMP:([^,]*)/);
   const h   = frame.match(/HUM:([^,]*)/);
@@ -71,6 +83,18 @@ function parseSensorFrame(frame) {
   const pm  = frame.match(/PUMP:([^,]*)/);
   const p25 = frame.match(/PM25:([^,]*)/);
   const p10 = frame.match(/PM10:([^,]*)/);
+  // RS485 JXBS-3001-TR soil probe fields. Note: SOILM/SOILT/SOILP must
+  // be matched BEFORE the plain SOIL:/PM.. patterns above would ever
+  // risk shadowing them — they don't here since the regexes require
+  // the exact "SOIL:" / "PM25:" text, but keep that in mind if you
+  // ever rename a field to a prefix of another one.
+  const som = frame.match(/SOILM:([^,]*)/);
+  const sot = frame.match(/SOILT:([^,]*)/);
+  const soph = frame.match(/SOILPH:([^,]*)/);
+  const soec = frame.match(/SOILEC:([^,]*)/);
+  const son = frame.match(/SOILN:([^,]*)/);
+  const sop = frame.match(/SOILP:([^,]*)/);
+  const sok = frame.match(/SOILK:([^,]*)/);
   if (!t || !h || !s) return null;
   return {
     temp: t[1].trim(),
@@ -82,6 +106,13 @@ function parseSensorFrame(frame) {
     pump: pm ? pm[1].trim() : '0',
     pm25: p25 ? p25[1].trim() : '--',
     pm10: p10 ? p10[1].trim() : '--',
+    soilm: som ? som[1].trim() : '--',
+    soilt: sot ? sot[1].trim() : '--',
+    soilph: soph ? soph[1].trim() : '--',
+    soilec: soec ? soec[1].trim() : '--',
+    soiln: son ? son[1].trim() : '--',
+    soilp: sop ? sop[1].trim() : '--',
+    soilk: sok ? sok[1].trim() : '--',
   };
 }
 

@@ -391,8 +391,10 @@
 <span class="font-label-md text-label-md text-secondary/70">dB</span>
 </div>
 </div>
-<!-- Light Level (RS485 lux sensor on ESP32) -->
-<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32">
+<!-- Light Level — shares the RS485/UART2 bus with the JXBS-3001-TR
+     soil probe (multi-drop, distinct Modbus slave addresses), rather
+     than being replaced by it. Live again. -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-tertiary">
 <div class="flex items-center gap-2 text-on-surface-variant">
 <span class="material-symbols-outlined text-sm">light_mode</span>
 <span class="font-label-md text-label-md">Light Level</span>
@@ -400,6 +402,86 @@
 <div class="flex items-baseline gap-1">
 <span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveLux">--</span>
 <span class="font-label-md text-label-md text-on-surface-variant">lux</span>
+</div>
+</div>
+<!-- Soil Probe: Moisture (RS485 JXBS-3001-TR, more accurate than the
+     capacitive A0 probe above — kept as a separate card rather than
+     merged, so both readings stay visible. Shares the RS485 bus with
+     the Light Level sensor above via Modbus multi-drop.) -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-tertiary">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">grass</span>
+<span class="font-label-md text-label-md">Soil Moisture (Probe)</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveSoilRSMoisture">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">%</span>
+</div>
+</div>
+<!-- Soil Probe: Temperature -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-tertiary">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">thermostat</span>
+<span class="font-label-md text-label-md">Soil Temperature</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveSoilRSTemp">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">°C</span>
+</div>
+</div>
+<!-- Soil Probe: pH -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-tertiary">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">science</span>
+<span class="font-label-md text-label-md">Soil pH</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveSoilRSPH">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">pH</span>
+</div>
+</div>
+<!-- Soil Probe: Conductivity/EC -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-tertiary">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">bolt</span>
+<span class="font-label-md text-label-md">Soil Conductivity</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveSoilRSEC">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">µs/cm</span>
+</div>
+</div>
+<!-- Soil Probe: Nitrogen -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-tertiary">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">eco</span>
+<span class="font-label-md text-label-md">Nitrogen (N)</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveSoilRSN">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">mg/kg</span>
+</div>
+</div>
+<!-- Soil Probe: Phosphorus -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-tertiary">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">eco</span>
+<span class="font-label-md text-label-md">Phosphorus (P)</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveSoilRSP">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">mg/kg</span>
+</div>
+</div>
+<!-- Soil Probe: Potassium -->
+<div class="glass-panel p-card-padding rounded-lg flex flex-col justify-between h-32 border-t-2 border-t-tertiary">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">eco</span>
+<span class="font-label-md text-label-md">Potassium (K)</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-on-surface flash-value" id="liveSoilRSK">--</span>
+<span class="font-label-md text-label-md text-on-surface-variant">mg/kg</span>
 </div>
 </div>
 <!-- Wind Speed — no wind sensor wired to the firmware; card kept as a
@@ -827,10 +909,20 @@ function updateSensors(msg) {
   // deployment) — their cards stay at the static "--" already in the
   // markup.
 
-  flashValue('liveLux', fmtOrDash(msg.lux));
+  flashValue('liveLux', fmtOrDash(msg.lux)); // lux sensor shares the RS485 bus with the soil probe below (multi-drop, distinct slave addresses)
   flashValue('livePm25', fmtOrDash(msg.pm25)); // -1 from firmware = "no AQI sensor wired yet"
   flashValue('livePm10', fmtOrDash(msg.pm10));
   flashValue('liveRain', fmtOrDash(msg.rain)); // no rain gauge on the hardware yet — firmware doesn't send `rain`, so this stays "--" until it does
+
+  // RS485 JXBS-3001-TR soil probe (ESP32 UART2 -> Aries "SOILDATA:..." ->
+  // this SENSOR broadcast's soilm/soilt/soilph/soilec/soiln/soilp/soilk).
+  flashValue('liveSoilRSMoisture', fmtOrDash(msg.soilm));
+  flashValue('liveSoilRSTemp', fmtOrDash(msg.soilt));
+  flashValue('liveSoilRSPH', fmtOrDash(msg.soilph));
+  flashValue('liveSoilRSEC', fmtOrDash(msg.soilec));
+  flashValue('liveSoilRSN', fmtOrDash(msg.soiln));
+  flashValue('liveSoilRSP', fmtOrDash(msg.soilp));
+  flashValue('liveSoilRSK', fmtOrDash(msg.soilk));
 
   recordHistory(msg.temp, msg.hum, msg.soil);
   syncBrightnessUI(msg.bright, msg.autobright);
