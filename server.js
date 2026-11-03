@@ -167,21 +167,34 @@ wss.on('connection', (ws, req) => {
     ws.send(JSON.stringify({ type: 'status', devices: devices.size }));
 
     ws.on('message', (raw) => {
-      let cmd;
+      let cmd, id;
       try {
         const msg = JSON.parse(raw.toString());
+        if (msg && msg.ping) { ws.send(JSON.stringify({ type: 'pong' })); return; } // browser liveness check
         cmd = msg.cmd;
+        id = msg.id;
       } catch {
         cmd = raw.toString();
       }
-      if (!cmd || typeof cmd !== 'string' || cmd.length === 0 || cmd.length > 64) return;
-      if (devices.size === 0) {
+      if (!cmd || typeof cmd !== 'string' || cmd.length === 0) return;
+      if (cmd.length > 64) {
+        ws.send(JSON.stringify({ type: 'error', id, cmd, msg: 'Command too long (max 64 characters)' }));
+        return;
+      }
+
+      // Forward to every OPEN device and count how many actually got it.
+      let delivered = 0;
+      for (const d of devices) {
+        if (d.readyState === WebSocket.OPEN) { d.send(cmd); delivered++; }
+      }
+      if (delivered === 0) {
         console.log('[dashboard] command dropped, no device online:', cmd);
-        ws.send(JSON.stringify({ type: 'error', msg: 'ESP32 device is offline - command not delivered', cmd }));
+        ws.send(JSON.stringify({ type: 'error', id, cmd, msg: 'ESP32 device is offline - command not delivered' }));
         return;
       }
       console.log('[dashboard] -> device:', cmd);
-      broadcast(devices, cmd); // forwarded verbatim, same as old POST /cmd
+      // Tells the page its tap reached the ESP32's socket (not yet the Aries).
+      ws.send(JSON.stringify({ type: 'ack', id, cmd, delivered }));
     });
 
     ws.on('close', () => dashboards.delete(ws));

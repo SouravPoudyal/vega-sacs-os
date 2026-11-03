@@ -169,6 +169,31 @@
 
         #ledHistoryChart { width: 100%; height: 200px; display: block; border-radius: 0.5rem; background: theme('colors.surface'); }
         #currentHistoryChart { width: 100%; height: 200px; display: block; border-radius: 0.5rem; background: theme('colors.surface'); }
+
+        /* --- Button press / command feedback --- */
+        button, .mode-btn, .chip-btn, .swatch-dot, input[type=range] { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+        .mode-btn, .chip-btn, .swatch-dot, #ledPowerButtons button, #fogPumpButtons button, #dualModeTabs button {
+            user-select: none; -webkit-user-select: none;
+            transition: transform .08s ease, box-shadow .15s ease, background-color .15s ease, border-color .15s ease, color .15s ease, filter .08s ease;
+        }
+        .mode-btn:active, .chip-btn:active, .swatch-dot:active, #ledPowerButtons button:active, #fogPumpButtons button:active, #dualModeTabs button:active {
+            transform: scale(.92); filter: brightness(1.3);
+        }
+        .cmd-pending { animation: cmdPulse .8s ease-in-out infinite; }
+        @keyframes cmdPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(76,215,246,0); } 50% { box-shadow: 0 0 0 4px rgba(76,215,246,.55); } }
+        .cmd-ok   { animation: none; box-shadow: 0 0 0 3px rgba(78,222,163,.75) !important; }
+        .cmd-fail { animation: cmdShake .35s; box-shadow: 0 0 0 3px rgba(255,107,107,.85) !important; }
+        @keyframes cmdShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+        #cmdToast {
+            position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); z-index: 9999;
+            max-width: 90vw; padding: 10px 16px; border-radius: 8px; font: 600 13px 'Inter', sans-serif;
+            background: #222a3d; color: #dae2fd; border: 1px solid #3d494c; box-shadow: 0 8px 24px rgba(0,0,0,.45);
+            opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease;
+        }
+        #cmdToast.show { opacity: 1; transform: translate(-50%, 0); }
+        #cmdToast.ok   { border-color: #4edea3; }
+        #cmdToast.warn { border-color: #ffb95f; }
+        #cmdToast.err  { border-color: #ff6b6b; color: #ffdad6; }
     </style>
 </head>
 <body class="bg-background text-on-surface font-body-md min-h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
@@ -839,28 +864,93 @@ const TOKEN = new URLSearchParams(location.search).get('token') || '';
 const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
 const wsUrl = `${wsProtocol}//${location.host}/ws?role=dashboard` + (TOKEN ? `&token=${encodeURIComponent(TOKEN)}` : '');
 
-let socket;
+let socket = null;
 let reconnectDelay = 1000;
+let reconnectTimer = null;
 let currentMode = null; // 0-8, mirrors firmware Display Mode
+let deviceCount = null; // ESP32 devices online (from the server's "status" messages); null = unknown yet
+
+// ---------- Toast + per-button feedback ----------
+let toastEl = null, toastTimer = null;
+function toast(text, kind) {
+  if (!toastEl) {
+    toastEl = document.createElement('div');
+    toastEl.id = 'cmdToast';
+    toastEl.setAttribute('role', 'status');
+    toastEl.setAttribute('aria-live', 'polite');
+    document.body.appendChild(toastEl);
+  }
+  toastEl.textContent = text;
+  toastEl.className = 'show ' + (kind || '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), kind === 'err' ? 3500 : 1500);
+}
+
+// Remember which control the user just touched so sendCmd() can show
+// pending / sent / failed feedback on it without editing every onclick.
+let lastPress = { el: null, t: 0 };
+function trackPress(e) {
+  const el = e.target && e.target.closest ? e.target.closest('button, input[type=range], input[type=color]') : null;
+  if (el) lastPress = { el, t: Date.now() };
+}
+document.addEventListener('click', trackPress, true);
+document.addEventListener('change', trackPress, true);
+function pressedEl() { return (Date.now() - lastPress.t < 150) ? lastPress.el : null; }
+
+function setBtnState(el, state) { // 'pending' | 'ok' | 'fail' | '' (clear)
+  if (!el) return;
+  el.classList.remove('cmd-pending', 'cmd-ok', 'cmd-fail');
+  if (!state) return;
+  el.classList.add('cmd-' + state);
+  if (state === 'ok')   setTimeout(() => el.classList.remove('cmd-ok'), 700);
+  if (state === 'fail') setTimeout(() => el.classList.remove('cmd-fail'), 1200);
+}
+
+// ---------- WebSocket connection ----------
+function ensureConnected() {
+  if (socket && (socket.readyState === WebSocket.CONNECTING || socket.readyState === WebSocket.OPEN)) return;
+  clearTimeout(reconnectTimer);
+  reconnectDelay = 1000;
+  connect();
+}
 
 function connect() {
-  socket = new WebSocket(wsUrl);
-  socket.addEventListener('open', () => { setConn(true); reconnectDelay = 1000; });
-  socket.addEventListener('close', (event) => {
+  if (socket && (socket.readyState === WebSocket.CONNECTING || socket.readyState === WebSocket.OPEN)) return;
+  clearTimeout(reconnectTimer);
+  setConn(false, 'CONNECTING');
+  const s = new WebSocket(wsUrl);
+  socket = s;
+
+  s.addEventListener('open', () => {
+    if (socket !== s) return;
+    reconnectDelay = 1000;
+    refreshStatusPill();
+    flushQueue();
+    startLiveness();
+  });
+  s.addEventListener('close', (event) => {
+    if (socket !== s) return;
+    stopLiveness();
     if (event.code === 4001) {
       setConn(false, 'Unauthorized — missing/invalid ?token in URL');
+      failQueued('Unauthorized — add ?token=... to the page URL');
       return; // retrying won't fix an auth failure; stop hammering the server
     }
     setConn(false);
-    setTimeout(connect, reconnectDelay);
-    reconnectDelay = Math.min(reconnectDelay * 1.5, 10000);
+    reconnectTimer = setTimeout(connect, reconnectDelay);
+    reconnectDelay = Math.min(reconnectDelay * 1.5, 5000);
   });
-  socket.addEventListener('error', () => socket.close());
-  socket.addEventListener('message', (event) => {
+  s.addEventListener('error', () => s.close());
+  s.addEventListener('message', (event) => {
+    heardFromServer();
     try {
       const msg = JSON.parse(event.data);
       if (msg.type === 'sensor') updateSensors(msg);
-      if (msg.type === 'state' && typeof msg.mode !== 'undefined') setMode(Number(msg.mode), false);
+      else if (msg.type === 'state' && typeof msg.mode !== 'undefined') setMode(Number(msg.mode), false);
+      else if (msg.type === 'status') { deviceCount = Number(msg.devices); refreshStatusPill(); }
+      else if (msg.type === 'ack') handleAck(msg);
+      else if (msg.type === 'error') handleCmdError(msg);
+      else if (msg.type === 'pong') serverPongSeen = true;
     } catch (e) {}
   });
 }
@@ -882,8 +972,122 @@ function setConn(ok, label) {
   labelEl.classList.toggle('text-error', !ok);
 }
 
-function sendCmd(cmd) {
-  if (socket && socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ cmd }));
+// Pill shows the ESP32's state, not just the browser<->server socket.
+function refreshStatusPill() {
+  if (!socket || socket.readyState !== WebSocket.OPEN) return;
+  if (deviceCount === 0) setConn(false, 'DEVICE OFFLINE');
+  else setConn(true, 'ONLINE');
+}
+
+// ---------- Liveness: detect a "connected" socket that is actually dead ----------
+// (phone woke from sleep, Wi-Fi switched, Render restarted...). Only active once the
+// server has answered a ping, so older server.js versions keep working untouched.
+let serverPongSeen = false, pingTimer = null, pongDeadline = null;
+function heardFromServer() { clearTimeout(pongDeadline); pongDeadline = null; }
+function pingServer() {
+  if (!socket || socket.readyState !== WebSocket.OPEN) return;
+  try { socket.send('{"ping":1}'); } catch (e) { return; }
+  if (serverPongSeen && !pongDeadline) {
+    const s = socket;
+    pongDeadline = setTimeout(() => { pongDeadline = null; if (socket === s) s.close(); }, 5000);
+  }
+}
+function startLiveness() { stopLiveness(); pingServer(); pingTimer = setInterval(pingServer, 10000); }
+function stopLiveness() { clearInterval(pingTimer); clearTimeout(pongDeadline); pingTimer = pongDeadline = null; }
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { ensureConnected(); pingServer(); } });
+window.addEventListener('online', ensureConnected);
+
+// ---------- Sending commands ----------
+let cmdSeq = 0;
+let ackSeen = false;               // true once the server has sent at least one "ack"
+const inflight = new Map();        // id -> { el, revert, timer }
+const queued = [];                 // commands tapped while the socket was down
+let lastSent = { cmd: '', t: 0 };
+
+function cmdKey(cmd) {
+  const i = cmd.indexOf(':');
+  if (i > 0) return cmd.slice(0, i);
+  return /^\d$/.test(cmd) ? 'MODE' : 'TEXT';
+}
+
+function sendCmd(cmd, opts) {
+  opts = opts || {};
+  const el = opts.el || pressedEl();
+  const now = Date.now();
+  if (cmd === lastSent.cmd && now - lastSent.t < 300) return; // ignore accidental double-tap
+  lastSent = { cmd, t: now };
+  if (navigator.vibrate) navigator.vibrate(12);               // haptic tick on phones
+
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    transmit(cmd, el, opts.revert);
+    return;
+  }
+  // Not connected: queue it (newest per command type wins) instead of silently dropping the tap.
+  const key = cmdKey(cmd);
+  const item = { cmd, key, el, revert: opts.revert, t: now };
+  const idx = queued.findIndex(q => q.key === key);
+  if (idx >= 0) { setBtnState(queued[idx].el, ''); queued[idx] = item; } else queued.push(item);
+  setBtnState(el, 'pending');
+  toast('Not connected — will send as soon as the link is back…', 'warn');
+  ensureConnected();
+}
+
+function transmit(cmd, el, revert) {
+  const id = ++cmdSeq;
+  try {
+    socket.send(JSON.stringify({ cmd, id }));
+  } catch (e) {
+    setBtnState(el, 'fail'); toast('Send failed — try again', 'err'); if (revert) revert();
+    return;
+  }
+  setBtnState(el, 'pending');
+  const entry = { el, revert };
+  entry.timer = setTimeout(() => {
+    inflight.delete(id);
+    if (ackSeen) {                       // server normally acks within milliseconds
+      setBtnState(el, 'fail');
+      toast('No confirmation from server — try again', 'err');
+      if (revert) revert();
+    } else {
+      setBtnState(el, 'ok');             // older server without acks: assume sent
+    }
+  }, ackSeen ? 4000 : 500);
+  inflight.set(id, entry);
+}
+
+function handleAck(msg) {
+  ackSeen = true;
+  const entry = inflight.get(msg.id);
+  if (!entry) return;
+  clearTimeout(entry.timer);
+  inflight.delete(msg.id);
+  setBtnState(entry.el, 'ok');
+  toast('Sent to device ✓', 'ok');
+}
+
+function handleCmdError(msg) {
+  ackSeen = true;
+  const entry = inflight.get(msg.id);
+  if (entry) {
+    clearTimeout(entry.timer);
+    inflight.delete(msg.id);
+    setBtnState(entry.el, 'fail');
+    if (entry.revert) entry.revert();
+  }
+  toast(msg.msg || 'Command failed', 'err');
+}
+
+function flushQueue() {
+  const now = Date.now();
+  while (queued.length) {
+    const q = queued.shift();
+    if (now - q.t > 15000) { setBtnState(q.el, ''); if (q.revert) q.revert(); continue; } // too old to still be wanted
+    transmit(q.cmd, q.el, q.revert);
+  }
+}
+function failQueued(text) {
+  while (queued.length) { const q = queued.shift(); setBtnState(q.el, 'fail'); if (q.revert) q.revert(); }
+  toast(text, 'err');
 }
 
 // ---------- Telemetry ----------
@@ -941,8 +1145,9 @@ function fmtOrDash(v) {
 const MODE_NAMES = { 0: 'Off', 1: 'Scroll Text', 2: 'Flag', 3: 'EQ', 4: 'Daily White / Solid', 5: 'Festival RGB', 6: 'Figures', 7: 'Temp / Hum', 8: 'Soil' };
 
 function setMode(mode, send = true) {
+  const prevMode = currentMode;
   currentMode = mode;
-  if (send) sendCmd(String(mode));
+  if (send) sendCmd(String(mode), { revert: () => setMode(prevMode, false) });
 
   document.querySelectorAll('#modeGrid .mode-btn').forEach(b => {
     b.classList.toggle('active', Number(b.dataset.mode) === mode);
