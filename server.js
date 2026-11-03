@@ -116,6 +116,13 @@ function parseSensorFrame(frame) {
   };
 }
 
+// Tell every dashboard how many ESP32 devices are online right now.
+// Sent whenever a device connects/disconnects (not just once when the
+// dashboard first opens) so the page can show "device offline".
+function broadcastStatus() {
+  broadcast(dashboards, { type: 'status', devices: devices.size });
+}
+
 function broadcast(set, data) {
   const msg = typeof data === 'string' ? data : JSON.stringify(data);
   for (const client of set) {
@@ -136,6 +143,7 @@ wss.on('connection', (ws, req) => {
   if (role === 'device') {
     devices.add(ws);
     console.log('[device] connected. total devices:', devices.size);
+    broadcastStatus();
 
     ws.on('message', (raw) => {
       const text = raw.toString().trim();
@@ -149,6 +157,7 @@ wss.on('connection', (ws, req) => {
     ws.on('close', () => {
       devices.delete(ws);
       console.log('[device] disconnected. total devices:', devices.size);
+      broadcastStatus();
     });
 
     ws.on('error', (err) => console.error('[device] error:', err.message));
@@ -166,6 +175,12 @@ wss.on('connection', (ws, req) => {
         cmd = raw.toString();
       }
       if (!cmd || typeof cmd !== 'string' || cmd.length === 0 || cmd.length > 64) return;
+      if (devices.size === 0) {
+        console.log('[dashboard] command dropped, no device online:', cmd);
+        ws.send(JSON.stringify({ type: 'error', msg: 'ESP32 device is offline - command not delivered', cmd }));
+        return;
+      }
+      console.log('[dashboard] -> device:', cmd);
       broadcast(devices, cmd); // forwarded verbatim, same as old POST /cmd
     });
 
@@ -175,6 +190,22 @@ wss.on('connection', (ws, req) => {
     ws.close(4000, 'role query param required: ?role=device or ?role=dashboard');
   }
 });
+
+// Keepalive: ping every client every 25s and drop any that miss two
+// pongs in a row. Proxies (Render's included) silently kill idle or
+// half-dead WebSockets, and without this the server keeps "sending" to
+// a dead ESP32 socket while the dashboard looks fine.
+wss.on('connection', (ws) => {
+  ws.missedPongs = 0;
+  ws.on('pong', () => { ws.missedPongs = 0; });
+});
+setInterval(() => {
+  for (const client of wss.clients) {
+    if (client.missedPongs >= 2) { client.terminate(); continue; }
+    client.missedPongs++;
+    try { client.ping(); } catch (e) { /* closed */ }
+  }
+}, 25000);
 
 // Simple health check Render (and you) can hit to confirm it's alive.
 app.get('/healthz', (req, res) => res.send('ok'));
