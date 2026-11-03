@@ -2,7 +2,8 @@
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<meta name="theme-color" content="#0b1326"/>
 <title>VEGA SACS / CITY GOVERNANCE OS - Pole Management</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -194,11 +195,75 @@
         #cmdToast.ok   { border-color: #4edea3; }
         #cmdToast.warn { border-color: #ffb95f; }
         #cmdToast.err  { border-color: #ff6b6b; color: #ffdad6; }
+
+        /* ============================================================
+           MOBILE (phones, < 768px) - desktop layout is untouched
+           ============================================================ */
+        #mobileNav { display: none; }
+        @media (max-width: 767px) {
+            html, body { max-width: 100%; overflow-x: hidden; -webkit-text-size-adjust: 100%; }
+            /* Let the page scroll normally (the desktop layout scrolls an inner <main>, which
+               fights mobile browser toolbars and cuts off the bottom with 100vh). */
+            body { overflow: visible !important; overflow-y: auto !important; min-height: 100dvh; }
+            #topHeader {
+                height: calc(52px + env(safe-area-inset-top, 0px)) !important;
+                padding: env(safe-area-inset-top, 0px) 12px 0 !important;
+            }
+            #topHeader img { height: 32px !important; width: auto !important; }
+            #topHeader .m-hide { display: none !important; }
+            #topHeader button { padding: 8px !important; min-width: 40px; min-height: 40px; }
+            #appShell { display: block !important; height: auto !important; padding-top: calc(52px + env(safe-area-inset-top, 0px)) !important; }
+            #mainScroll {
+                overflow: visible !important; margin-left: 0 !important;
+                padding: 12px 12px calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+            }
+            #pageHeader { flex-wrap: wrap; gap: 8px; margin-bottom: 16px !important; }
+            #pageHeader > div:first-child { flex-wrap: wrap; gap: 6px 10px !important; }
+            #pageHeader > div:first-child > .h-6 { display: none; }
+            #pageHeader .ml-4 { margin-left: 0 !important; }
+            #pageTitle { font-size: 22px !important; line-height: 28px !important; }
+
+            /* Live telemetry cards: shorter, smaller numbers so they fit two-up */
+            #mainScroll .h-32 { height: auto !important; min-height: 96px; }
+            #mainScroll .text-display-lg { font-size: 30px !important; line-height: 36px !important; }
+
+            /* Touch targets >= 44px */
+            .chip-btn { min-height: 44px; font-size: 12px; }
+            .mode-btn { min-height: 68px; font-size: 12px; }
+            #ledPowerButtons button, #fogPumpButtons button, #dualModeTabs button { min-height: 44px; }
+            #ledPowerButtons button { padding-left: 14px; padding-right: 14px; }
+            .swatch-dot { min-height: 40px; }
+            input[type=color].swatch-custom { width: 48px; height: 48px; }
+            /* 16px inputs stop iOS Safari zooming the page when a field is focused */
+            #mainScroll input[type=text] { font-size: 16px !important; min-height: 44px; }
+            input[type=range].vega-range { height: 44px; }
+            input[type=range].vega-range::-webkit-slider-thumb { width: 26px; height: 26px; margin-top: -11px; }
+            input[type=range].vega-range::-moz-range-thumb { width: 22px; height: 22px; }
+
+            #ledAdvanced { scroll-margin-top: calc(64px + env(safe-area-inset-top, 0px)); }
+            #cmdToast { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+
+            /* Bottom navigation */
+            #mobileNav {
+                display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+                background: #171f33; border-top: 1px solid #3d494c;
+                padding-bottom: env(safe-area-inset-bottom, 0px);
+            }
+            #mobileNav a, #mobileNav button {
+                flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+                min-height: 56px; padding: 6px 0; background: none; border: 0; cursor: pointer;
+                font: 500 10px 'JetBrains Mono', monospace; letter-spacing: .04em; text-decoration: none;
+                color: #bcc9cd; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+            }
+            #mobileNav .material-symbols-outlined { font-size: 24px; }
+            #mobileNav a.active { color: #ffb95f; }
+            #mobileNav a:active, #mobileNav button:active { background: rgba(255,255,255,.06); }
+        }
     </style>
 </head>
 <body class="bg-background text-on-surface font-body-md min-h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
 <!-- TopNavBar -->
-<header class="bg-surface-container-high dark:bg-surface-container-high docked full-width top-0 border-b border-outline-variant dark:border-outline-variant flat no shadows fixed left-0 w-full z-50 flex items-center justify-between px-margin-page">
+<header id="topHeader" class="bg-surface-container-high dark:bg-surface-container-high docked full-width top-0 border-b border-outline-variant dark:border-outline-variant flat no shadows fixed left-0 w-full z-50 flex items-center justify-between px-margin-page">
 <div class="flex items-center gap-stack-md">
 <img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBze4A2CRxYkVIEM0V-QeCapzvm671jv48CDD7kWlXbsoAOhVkTno-c4fayfyeel4gnhrzzQWBA9qnDW7ezh6_9wnZOgdzwLahb0nBYkJG72E0Cq4h3VAFAB9agrSXvYImUvpNnSxGBwLSGNGhXOVfWQCYiUB-KBvCI1jy75vOxihF1RsyBz47o75HXGmchYH4-JIVEukdscTmL-CGKpHvi2GrMDoZ6KhkdpARsWXKnr9HZiIbzWXNey_islXJbiuxW3TQ"/>
 <span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight truncate hidden lg:block">VEGA SACS OS</span>
@@ -210,6 +275,7 @@
 <a class="text-on-surface-variant dark:text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary dark:hover:text-primary transition-colors duration-200 h-full flex items-center mt-1" href="fault-reporting.html">Fault Reporting</a>
 </nav>
 <div class="flex items-center gap-stack-md">
+<div id="mStatusWrap" class="md:hidden flex items-center gap-1.5 px-2 py-1 rounded border bg-error/10 border-error/20"><div id="mStatusDot" class="w-2 h-2 rounded-full bg-error"></div><span id="mStatusLabel" class="font-label-sm text-label-sm text-error">CONNECTING</span></div>
 <div class="hidden lg:flex items-center bg-surface px-3 py-1.5 rounded border border-outline-variant neon-border-focus transition-all duration-200">
 <span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span>
 <input class="bg-transparent border-none focus:ring-0 text-body-md text-on-surface py-0 px-2 w-48 placeholder-on-surface-variant" placeholder="Search node ID..." type="text"/>
@@ -229,14 +295,14 @@
 <button class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 rounded hover:bg-surface-variant">
 <span class="material-symbols-outlined">settings</span>
 </button>
-<div class="ml-2 w-8 h-8 rounded bg-surface-variant overflow-hidden border border-outline-variant">
+<div class="m-hide ml-2 w-8 h-8 rounded bg-surface-variant overflow-hidden border border-outline-variant">
 <img alt="VEGA SACS Logo" class="h-32 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUAmrtckNdGlZbcsxuKV-QSqvNgOs5dSuNujTtfi8sp8GXJ50BqQdyyOoFzHAa3BAKjluyiDBaiDPhGk5u0ngyHFD5KQYcIV73eq5jyPIPjHx2uHQU4y5Rj_OO4VvCC5baCCTPwjatztv4GPmZ7vU-BGUIc6UXCdbG4HJKFGSwxQMNiufM__faz6UyoY4_H2WH60cbYMvgtWLywG6BVybl6bI2bLaHUR5ECT9PbwqQWvAh8Vm5FgH7WphR7rcrUg-MrUI"/>
 </div>
 </div>
 </div>
 </header>
 <!-- SideNavBar & Main Content Wrapper -->
-<div class="flex pt-40 h-screen">
+<div id="appShell" class="flex pt-40 h-screen">
 <!-- SideNavBar -->
 <aside class="bg-surface-container dark:bg-surface-container fixed left-0 top-40 h-[calc(100vh-160px)] w-sidebar-width border-r border-outline-variant dark:border-outline-variant flat no shadows flex flex-col justify-between py-stack-lg z-40 hidden md:flex">
 <div class="flex flex-col gap-unit">
@@ -289,16 +355,16 @@
 </div>
 </aside>
 <!-- Main Content Area -->
-<main class="flex-1 md:ml-sidebar-width overflow-y-auto bg-background p-margin-page">
+<main id="mainScroll" class="flex-1 md:ml-sidebar-width overflow-y-auto bg-background p-margin-page">
 <!-- Page Header -->
-<div class="flex items-center justify-between mb-8">
+<div id="pageHeader" class="flex items-center justify-between mb-8">
 <div class="flex items-center gap-4">
 <a class="text-on-surface-variant hover:text-primary flex items-center gap-1 transition-colors group" href="fleet-overview.html">
 <span class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
 <span class="font-label-md text-label-md">Back to Fleet</span>
 </a>
 <div class="h-6 w-px bg-outline-variant mx-2"></div>
-<h1 class="font-headline-xl text-headline-xl text-on-surface m-0">POLE-GHY-001</h1>
+<h1 id="pageTitle" class="font-headline-xl text-headline-xl text-on-surface m-0">POLE-GHY-001</h1>
 <span class="text-on-surface-variant font-body-lg">Fancy Bazaar</span>
 <div class="flex items-center gap-2 ml-4">
 <span class="px-2 py-1 rounded bg-surface-bright border border-outline-variant font-label-sm text-label-sm text-on-surface tracking-wider">FULL POLE</span>
@@ -854,6 +920,14 @@ Open full LED control <span class="material-symbols-outlined text-sm">arrow_down
 </div>
 </main>
 </div>
+<!-- Mobile bottom navigation (phones only; the top nav + sidebar are hidden below 768px) -->
+<nav id="mobileNav" aria-label="Primary">
+<a href="fleet-overview.html"><span class="material-symbols-outlined">hub</span>Fleet</a>
+<a href="pole-management.html" class="active"><span class="material-symbols-outlined">lightbulb</span>Pole</a>
+<button type="button" onclick="document.getElementById('ledAdvanced').scrollIntoView({behavior:'smooth'})"><span class="material-symbols-outlined">tune</span>LED</button>
+<a href="energy-analytics.html"><span class="material-symbols-outlined">bolt</span>Energy</a>
+<a href="fault-reporting.html"><span class="material-symbols-outlined">report</span>Faults</a>
+</nav>
 <script>
 // ============================================================
 // VEGA SACS OS · Pole Management — LED Matrix live control
@@ -970,6 +1044,17 @@ function setConn(ok, label) {
   dot.classList.toggle('animate-pulse', ok);
   labelEl.classList.toggle('text-tertiary', ok);
   labelEl.classList.toggle('text-error', !ok);
+
+  // Same state in the always-visible phone header chip.
+  const mw = document.getElementById('mStatusWrap');
+  if (mw) {
+    const md = document.getElementById('mStatusDot'), ml = document.getElementById('mStatusLabel');
+    const text = label || (ok ? 'ONLINE' : 'RECONNECTING');
+    ml.textContent = /^Unauthorized/.test(text) ? 'NO TOKEN' : text;
+    md.className = 'w-2 h-2 rounded-full ' + (ok ? 'bg-tertiary animate-pulse' : 'bg-error');
+    ml.className = 'font-label-sm text-label-sm ' + (ok ? 'text-tertiary' : 'text-error');
+    mw.className = 'md:hidden flex items-center gap-1.5 px-2 py-1 rounded border ' + (ok ? 'bg-tertiary/10 border-tertiary/20' : 'bg-error/10 border-error/20');
+  }
 }
 
 // Pill shows the ESP32's state, not just the browser<->server socket.
